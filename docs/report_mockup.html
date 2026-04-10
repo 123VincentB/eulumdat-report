@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Photometric Datasheet — sample_04</title>
+<style>
+@page { size: A4; margin: 12mm 14mm 12mm 14mm; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', Calibri, 'Helvetica Neue', sans-serif;
+  font-size: 8.5pt;
+  color: #1a2433;
+  background: #fff;
+  line-height: 1.4;
+}
+:root {
+  --blue-dark:   #0d2b45;
+  --blue-light:  #2e7ab8;
+  --blue-pale:   #deeaf4;
+  --blue-stripe: #eef4fa;
+  --accent:      #e8a020;
+  --border:      #c0cdd8;
+  --text:        #1a2433;
+  --text-light:  #5a6a7a;
+  --sep:         #7a8fa6;
+}
+
+/* ── REPORT HEADER ── */
+.report-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  border-bottom: 3px solid var(--blue-dark); padding-bottom: 5px; margin-bottom: 9px;
+}
+.report-title { font-size: 16pt; font-weight: 700; color: var(--blue-dark); letter-spacing: -0.02em; line-height: 1; }
+.report-subtitle { font-size: 8pt; color: var(--text-light); letter-spacing: 0.08em; text-transform: uppercase; }
+.report-meta { text-align: right; font-size: 7pt; color: var(--text-light); line-height: 1.6; }
+.report-meta strong { color: var(--text); font-weight: 600; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 6.5pt; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--blue-light); border-bottom: 1.5px solid var(--blue-pale);
+  padding-bottom: 2px; margin-bottom: 5px;
+}
+
+/* ── IDENTIFICATION ── */
+.identification {
+  background: var(--blue-dark); color: #fff; padding: 7px 10px; margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 0;
+}
+.ident-field {
+  display: flex; flex-direction: column; gap: 1px;
+  flex: 1; min-width: 0; padding: 0 10px;
+}
+.ident-field:first-child { padding-left: 0; }
+.ident-field:last-child  { padding-right: 0; }
+.ident-label { font-size: 6pt; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; }
+.ident-value { font-size: 8.5pt; font-weight: 600; color: #fff; white-space: normal; word-break: break-word; line-height: 1.3; }
+.ident-value.large { font-size: 10.5pt; font-weight: 700; color: var(--accent); }
+.ident-divider { width: 1px; flex-shrink: 0; background: rgba(255,255,255,0.18); align-self: stretch; }
+
+/* ── TWO-COLUMN GRID ── */
+.two-col { display: flex; gap: 8px; margin-bottom: 8px; }
+.col-half { flex: 1; min-width: 0; }
+
+/* ── DATA CARD ── */
+.data-card { border: 1px solid var(--border); border-top: 2.5px solid var(--blue-light); padding: 7px 9px; height: 100%; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table tr td { padding: 2.5px 0; vertical-align: top; }
+.data-table tr td:first-child { color: var(--text-light); width: 58%; padding-right: 6px; font-size: 7.8pt; }
+.data-table tr td:last-child { font-weight: 600; font-size: 8pt; color: var(--text); }
+.data-table tr.row-sep td { border-top: 1px solid var(--blue-pale); padding-top: 4px; }
+.val-blue   { color: var(--blue-light); }
+.val-accent { color: var(--accent); }
+
+/* ── DIAGRAMS ROW ── */
+.diagrams-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: stretch; }
+.diagram-card {
+  flex: 1; border: 1px solid var(--border); border-top: 2.5px solid var(--blue-light);
+  padding: 7px 9px; display: flex; flex-direction: column; align-items: center;
+}
+.diagram-title { font-size: 6.5pt; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue-light); align-self: flex-start; margin-bottom: 4px; }
+.svg-placeholder {
+  width: 100%; max-width: 230px; aspect-ratio: 1;
+  background: var(--blue-stripe); border: 1px dashed var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 4px; color: var(--text-light); font-size: 7pt;
+}
+.diagram-stats { width: 100%; margin-top: 5px; }
+
+/* ── LEGEND ── */
+.diagram-legend {
+  display: flex; justify-content: center; gap: 14px;
+  border: 1px solid var(--blue-pale); padding: 4px 8px;
+  margin-bottom: 5px;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 6pt; color: var(--text-light); }
+.legend-item span { white-space: nowrap; }
+
+/* ── HALF-ANGLE / FWHM ── */
+.ha-grid { display: flex; gap: 8px; }
+.ha-group { flex: 1; border: 1px solid var(--blue-pale); padding: 4px 7px 5px 7px; }
+.ha-row { display: flex; justify-content: space-between; align-items: baseline; padding: 1.5px 0; }
+.ha-label { font-size: 6pt; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.07em; white-space: nowrap; }
+.ha-value { font-size: 7.5pt; font-weight: 700; color: var(--blue-dark); }
+.ha-value.none-val { color: var(--text-light); font-style: italic; font-weight: 400; }
+.ha-fwhm { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--blue-pale); margin-top: 4px; padding-top: 4px; }
+.ha-fwhm-label { font-size: 6pt; color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.07em; font-weight: 700; }
+.ha-fwhm-value { font-size: 7.5pt; font-weight: 700; color: var(--blue-light); }
+.ha-fwhm-value.none-val { color: var(--text-light); font-style: italic; font-weight: 400; }
+
+/* Luminance stat */
+.stat-item { display: flex; flex-direction: column; }
+.stat-label { font-size: 6pt; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.07em; }
+.stat-value { font-size: 8pt; font-weight: 700; color: var(--blue-dark); }
+.stat-value.accent { color: var(--accent); }
+
+/* ── UGR ── */
+.ugr-section { margin-bottom: 8px; }
+.ugr-warning { border: 1.5px solid var(--accent); background: #fffbee; color: #7a4800; padding: 6px 10px; font-size: 7.5pt; font-style: italic; margin-top: 4px; }
+table.ugr { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
+table.ugr th, table.ugr td { border: 1px solid var(--border); padding: 3px 5px; text-align: center; white-space: nowrap; }
+table.ugr th.rho-label { background: #e5eaf0; font-weight: 600; color: var(--text); text-align: left; padding-left: 7px; font-size: 7pt; }
+table.ugr th.rho-val  { background: #e5eaf0; font-weight: 600; color: var(--text); font-size: 7pt; }
+table.ugr th.orient   { background: var(--blue-pale); font-style: italic; font-weight: 600; color: var(--blue-dark); font-size: 7pt; }
+table.ugr th.room-hdr { background: #e5eaf0; font-weight: 700; color: var(--blue-dark); font-size: 7pt; vertical-align: middle; }
+table.ugr td.label    { background: var(--blue-stripe); font-weight: 600; color: var(--text); }
+table.ugr td.value    { color: var(--text); }
+table.ugr .sep-left   { border-left: 2px solid var(--sep) !important; }
+table.ugr tr.row-sep td, table.ugr tr.row-sep th { border-top: 2px solid var(--sep) !important; }
+table.ugr td.ugr-highlight { background: #fffbcc !important; font-weight: 700; color: #7a4800; }
+.ugr-shr { font-size: 6.8pt; color: var(--text-light); text-align: right; margin-top: 3px; font-style: italic; }
+
+/* ── FOOTER ── */
+.report-footer { border-top: 1px solid var(--border); padding-top: 4px; display: flex; justify-content: space-between; color: var(--text-light); font-size: 6.5pt; }
+</style>
+</head>
+<body>
+
+<!-- ═══ REPORT HEADER ═══ -->
+<div class="report-header">
+  <div>
+    <div class="report-title">Photometric Datasheet</div>
+    <div class="report-subtitle">Luminaire Performance Report</div>
+  </div>
+  <div class="report-meta">
+    <strong>Source file</strong>&nbsp; sample_04.ldt<br>
+    <strong>Generated</strong>&nbsp; 2026-04-09T14:32:07<br>
+    <strong>Tool</strong>&nbsp; eulumdat-report v1.0.0
+  </div>
+</div>
+
+<!-- ═══ IDENTIFICATION ═══ -->
+<div class="identification">
+  <div class="ident-field">
+    <span class="ident-label">Luminaire name</span>
+    <span class="ident-value large">This is a very long luminaire name that wraps onto the next line</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Manufacturer</span>
+    <span class="ident-value">company bla bla bla bla bla</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Catalogue no.</span>
+    <span class="ident-value">sample_04</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Date / User</span>
+    <span class="ident-value">21.03.2025 / TC</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Angular grid</span>
+    <span class="ident-value">ISYM&nbsp;0 · 24C × 37γ</span>
+  </div>
+</div>
+
+<!-- ═══ GEOMETRY + LAMP DATA ═══ -->
+<div class="two-col">
+  <div class="col-half">
+    <div class="data-card">
+      <div class="section-label">Geometry</div>
+      <table class="data-table">
+        <tr><td>Luminaire length</td>      <td class="val-blue">1480.0 mm</td></tr>
+        <tr><td>Luminaire width</td>       <td class="val-blue">65.0 mm</td></tr>
+        <tr><td>Luminaire height</td>      <td class="val-blue">10.0 mm</td></tr>
+        <tr class="row-sep">
+          <td>Luminous area length</td>    <td>1480.0 mm</td></tr>
+        <tr><td>Luminous area width</td>   <td>63.0 mm</td></tr>
+        <tr><td>Luminous height C0°</td>   <td>0.0 mm</td></tr>
+        <tr><td>Luminous height C90°</td>  <td>0.0 mm</td></tr>
+        <tr><td>Luminous height C180°</td> <td>0.0 mm</td></tr>
+        <tr><td>Luminous height C270°</td> <td>0.0 mm</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-half">
+    <div class="data-card">
+      <div class="section-label">Lamp data</div>
+      <table class="data-table">
+        <tr><td>Lamp type</td>                      <td class="val-blue">LED-Modul</td></tr>
+        <tr><td>Number of lamps</td>                <td>1</td></tr>
+        <tr><td>Luminous flux (total)</td>          <td>12 334 lm</td></tr>
+        <tr><td>Power</td>                          <td>66.8 W</td></tr>
+        <tr><td>Luminous efficacy</td>              <td class="val-blue">184.6 lm/W</td></tr>
+        <tr class="row-sep">
+          <td>LORL</td>                             <td>95.0 %</td></tr>
+        <tr><td>Downward flux fraction (DFF)</td>   <td class="val-accent">78.3 %</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DIAGRAMS ═══ -->
+<div class="diagrams-row">
+
+  <!-- Intensity -->
+  <div class="diagram-card">
+    <div class="diagram-title">Polar Intensity Diagram &nbsp;[cd / klm]</div>
+    <div class="svg-placeholder">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="22" r="19" stroke="#2e7ab8" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <ellipse cx="22" cy="22" rx="11" ry="19" stroke="#1a4a72" stroke-width="1.5"/>
+        <line x1="22" y1="3" x2="22" y2="41" stroke="#c0cdd8" stroke-width="0.8"/>
+        <line x1="3" y1="22" x2="41" y2="22" stroke="#c0cdd8" stroke-width="0.8"/>
+      </svg>
+      <span>SVG intensity diagram</span>
+    </div>
+
+    <!-- Légende des plans C — ordre spatial gauche→droite -->
+    <div class="diagram-legend">
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#0d2b45" stroke-width="1.8"/>
+        </svg>
+        <span>C180°</span>
+      </div>
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#2e7ab8" stroke-width="1.8" stroke-dasharray="4 2"/>
+        </svg>
+        <span>C270°</span>
+      </div>
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#0d2b45" stroke-width="1.8"/>
+        </svg>
+        <span>C0°</span>
+      </div>
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#2e7ab8" stroke-width="1.8" stroke-dasharray="4 2"/>
+        </svg>
+        <span>C90°</span>
+      </div>
+    </div>
+
+    <!-- Half-angles + FWHM -->
+    <div class="ha-grid">
+      <!-- Groupe C0 / C180 -->
+      <div class="ha-group">
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C180°</span>
+          <span class="ha-value">12.5°</span>
+        </div>
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C0°</span>
+          <span class="ha-value">16.4°</span>
+        </div>
+        <div class="ha-fwhm">
+          <span class="ha-fwhm-label">FWHM C0/C180</span>
+          <span class="ha-fwhm-value">28.9°</span>
+        </div>
+      </div>
+      <!-- Groupe C90 / C270 — exemple avec C270 = None -->
+      <div class="ha-group">
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C270°</span>
+          <span class="ha-value none-val">—</span>
+        </div>
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C90°</span>
+          <span class="ha-value">29.9°</span>
+        </div>
+        <div class="ha-fwhm">
+          <span class="ha-fwhm-label">FWHM C90/C270</span>
+          <span class="ha-fwhm-value none-val">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Luminance -->
+  <div class="diagram-card">
+    <div class="diagram-title">Polar Luminance Diagram &nbsp;[cd / m²]</div>
+    <div class="svg-placeholder">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+        <circle cx="22" cy="22" r="19" stroke="#2e7ab8" stroke-width="1.5" stroke-dasharray="4 2"/>
+        <ellipse cx="22" cy="22" rx="15" ry="19" stroke="#1a4a72" stroke-width="1.5"/>
+        <line x1="22" y1="3" x2="22" y2="41" stroke="#c0cdd8" stroke-width="0.8"/>
+        <line x1="3" y1="22" x2="41" y2="22" stroke="#c0cdd8" stroke-width="0.8"/>
+      </svg>
+      <span>SVG luminance diagram</span>
+    </div>
+    <div class="diagram-stats">
+      <div class="stat-item">
+        <span class="stat-label">Maximum luminance</span>
+        <span class="stat-value accent">5 878 cd/m²</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ UGR ═══ -->
+<div class="ugr-section">
+  <div class="section-label">Glare Evaluation — UGR &nbsp;(CIE 117 / CIE 190, SHR = 0.25)</div>
+
+  <div class="ugr-warning">
+    ⚠&nbsp; The UGR method is not applicable for this luminaire
+    (ISYM&nbsp;=&nbsp;0 — asymmetric intensity distribution).
+    A UGR catalogue table requires full rotational or quadrant symmetry (ISYM&nbsp;=&nbsp;1 or ISYM&nbsp;=&nbsp;4).
+  </div>
+
+  <div style="margin-top: 8px;">
+  <table class="ugr">
+    <thead>
+      <tr>
+        <th class="rho-label" colspan="2">&#961; Ceiling</th>
+        <th class="rho-val">70</th><th class="rho-val">70</th><th class="rho-val">50</th><th class="rho-val">50</th><th class="rho-val">30</th>
+        <th class="rho-val sep-left">70</th><th class="rho-val">70</th><th class="rho-val">50</th><th class="rho-val">50</th><th class="rho-val">30</th>
+      </tr>
+      <tr>
+        <th class="rho-label" colspan="2">&#961; Walls</th>
+        <th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val">30</th>
+        <th class="rho-val sep-left">50</th><th class="rho-val">30</th><th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val">30</th>
+      </tr>
+      <tr>
+        <th class="rho-label" colspan="2">&#961; Floor</th>
+        <th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th>
+        <th class="rho-val sep-left">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th>
+      </tr>
+      <tr>
+        <th class="room-hdr" colspan="2">Room size<br><span style="display:inline-block;width:26px">X</span>Y</th>
+        <th class="orient" colspan="5">Viewing direction at right angles (crosswise)</th>
+        <th class="orient sep-left" colspan="5">Viewing direction parallel (endwise)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-sep">
+        <td class="label">2H</td><td class="label">2H</td>
+        <td class="value">17.4</td><td class="value">18.5</td><td class="value">17.8</td><td class="value">18.8</td><td class="value">19.1</td>
+        <td class="value sep-left">20.1</td><td class="value">21.1</td><td class="value">20.4</td><td class="value">21.5</td><td class="value">21.8</td>
+      </tr>
+      <tr><td class="label">2H</td><td class="label">3H</td>
+        <td class="value">17.7</td><td class="value">18.6</td><td class="value">18.0</td><td class="value">18.9</td><td class="value">19.3</td>
+        <td class="value sep-left">20.1</td><td class="value">21.0</td><td class="value">20.4</td><td class="value">21.3</td><td class="value">21.7</td>
+      </tr>
+      <tr><td class="label">2H</td><td class="label">4H</td>
+        <td class="value">17.8</td><td class="value">18.6</td><td class="value">18.2</td><td class="value">19.0</td><td class="value">19.4</td>
+        <td class="value sep-left">20.1</td><td class="value">20.9</td><td class="value">20.5</td><td class="value">21.3</td><td class="value">21.7</td>
+      </tr>
+      <tr><td class="label">2H</td><td class="label">6H</td>
+        <td class="value">17.9</td><td class="value">18.7</td><td class="value">18.3</td><td class="value">19.0</td><td class="value">19.4</td>
+        <td class="value sep-left">20.1</td><td class="value">20.9</td><td class="value">20.5</td><td class="value">21.2</td><td class="value">21.6</td>
+      </tr>
+      <tr><td class="label">2H</td><td class="label">8H</td>
+        <td class="value">17.9</td><td class="value">18.6</td><td class="value">18.3</td><td class="value">19.0</td><td class="value">19.4</td>
+        <td class="value sep-left">20.1</td><td class="value">20.8</td><td class="value">20.5</td><td class="value">21.2</td><td class="value">21.6</td>
+      </tr>
+      <tr><td class="label">2H</td><td class="label">12H</td>
+        <td class="value">17.8</td><td class="value">18.5</td><td class="value">18.2</td><td class="value">18.9</td><td class="value">19.3</td>
+        <td class="value sep-left">20.0</td><td class="value">20.7</td><td class="value">20.5</td><td class="value">21.1</td><td class="value">21.6</td>
+      </tr>
+      <tr class="row-sep">
+        <td class="label">4H</td><td class="label">2H</td>
+        <td class="value">17.3</td><td class="value">18.2</td><td class="value">17.7</td><td class="value">18.5</td><td class="value">18.9</td>
+        <td class="value sep-left">19.9</td><td class="value">20.7</td><td class="value">20.3</td><td class="value">21.1</td><td class="value">21.5</td>
+      </tr>
+      <tr><td class="label">4H</td><td class="label">3H</td>
+        <td class="value">17.7</td><td class="value">18.4</td><td class="value">18.1</td><td class="value">18.8</td><td class="value">19.2</td>
+        <td class="value sep-left">19.9</td><td class="value">20.6</td><td class="value">20.4</td><td class="value">21.0</td><td class="value">21.5</td>
+      </tr>
+      <tr><td class="label">4H</td><td class="label">4H</td>
+        <td class="value">17.9</td><td class="value">18.6</td><td class="value">18.3</td><td class="value">19.0</td><td class="value">19.4</td>
+        <td class="value sep-left">20.0</td><td class="value">20.6</td><td class="value">20.5</td><td class="value">21.0</td><td class="value">21.5</td>
+      </tr>
+      <tr><td class="label">4H</td><td class="label">6H</td>
+        <td class="value">18.0</td><td class="value">18.7</td><td class="value">18.4</td><td class="value">19.1</td><td class="value">19.5</td>
+        <td class="value sep-left">20.0</td><td class="value">20.6</td><td class="value">20.5</td><td class="value">21.0</td><td class="value">21.5</td>
+      </tr>
+      <tr><td class="label">4H</td><td class="label">8H</td>
+        <td class="value ugr-highlight">18.0</td><td class="value">18.7</td><td class="value">18.4</td><td class="value">19.1</td><td class="value">19.5</td>
+        <td class="value ugr-highlight sep-left">20.0</td><td class="value">20.6</td><td class="value">20.5</td><td class="value">21.0</td><td class="value">21.5</td>
+      </tr>
+      <tr><td class="label">4H</td><td class="label">12H</td>
+        <td class="value">18.0</td><td class="value">18.6</td><td class="value">18.4</td><td class="value">19.0</td><td class="value">19.5</td>
+        <td class="value sep-left">20.0</td><td class="value">20.5</td><td class="value">20.5</td><td class="value">21.0</td><td class="value">21.5</td>
+      </tr>
+      <tr class="row-sep">
+        <td class="label">8H</td><td class="label">4H</td>
+        <td class="value ugr-highlight">17.9</td><td class="value">18.5</td><td class="value">18.3</td><td class="value">18.9</td><td class="value">19.3</td>
+        <td class="value ugr-highlight sep-left">19.9</td><td class="value">20.4</td><td class="value">20.4</td><td class="value">20.8</td><td class="value">21.3</td>
+      </tr>
+      <tr><td class="label">8H</td><td class="label">6H</td>
+        <td class="value">18.0</td><td class="value">18.6</td><td class="value">18.4</td><td class="value">19.0</td><td class="value">19.4</td>
+        <td class="value sep-left">19.9</td><td class="value">20.3</td><td class="value">20.4</td><td class="value">20.8</td><td class="value">21.3</td>
+      </tr>
+      <tr><td class="label">8H</td><td class="label">8H</td>
+        <td class="value">18.0</td><td class="value">18.6</td><td class="value">18.5</td><td class="value">19.0</td><td class="value">19.5</td>
+        <td class="value sep-left">19.9</td><td class="value">20.3</td><td class="value">20.5</td><td class="value">20.8</td><td class="value">21.3</td>
+      </tr>
+      <tr><td class="label">8H</td><td class="label">12H</td>
+        <td class="value">18.0</td><td class="value">18.5</td><td class="value">18.5</td><td class="value">18.9</td><td class="value">19.4</td>
+        <td class="value sep-left">20.0</td><td class="value">20.3</td><td class="value">20.5</td><td class="value">20.8</td><td class="value">21.3</td>
+      </tr>
+      <tr class="row-sep">
+        <td class="label">12H</td><td class="label">4H</td>
+        <td class="value">17.9</td><td class="value">18.5</td><td class="value">18.3</td><td class="value">18.8</td><td class="value">19.3</td>
+        <td class="value sep-left">19.8</td><td class="value">20.2</td><td class="value">20.3</td><td class="value">20.7</td><td class="value">21.2</td>
+      </tr>
+      <tr><td class="label">12H</td><td class="label">6H</td>
+        <td class="value">18.0</td><td class="value">18.5</td><td class="value">18.4</td><td class="value">18.9</td><td class="value">19.4</td>
+        <td class="value sep-left">19.8</td><td class="value">20.2</td><td class="value">20.4</td><td class="value">20.7</td><td class="value">21.2</td>
+      </tr>
+      <tr><td class="label">12H</td><td class="label">8H</td>
+        <td class="value">18.0</td><td class="value">18.5</td><td class="value">18.4</td><td class="value">18.9</td><td class="value">19.4</td>
+        <td class="value sep-left">19.9</td><td class="value">20.2</td><td class="value">20.4</td><td class="value">20.7</td><td class="value">21.2</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="ugr-shr">SHR = 0.25</div>
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="report-footer">
+  <span>Generated by <strong>eulumdat-report v1.0.0</strong></span>
+  <span>sample_04.ldt &nbsp;·&nbsp; 2026-04-09T14:32:07</span>
+</div>
+
+</body>
+</html>

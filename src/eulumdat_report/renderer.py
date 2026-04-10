@@ -1,0 +1,138 @@
+"""renderer.py — Jinja2 HTML rendering and WeasyPrint PDF export."""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+from jinja2 import Environment, FileSystemLoader
+
+from .collector import ReportData
+
+_TEMPLATES_DIR = Path(__file__).parent / "templates"
+
+
+# ── Custom Jinja2 filters ─────────────────────────────────────────────────────
+
+def _filter_thousands(value, decimals: int = 0) -> str:
+    """Format a number with narrow no-break space as thousands separator."""
+    if value is None:
+        return "\u2014"
+    try:
+        n = float(value)
+        if decimals == 0:
+            formatted = f"{round(n):,}".replace(",", "\u202f")
+        else:
+            formatted = f"{n:,.{decimals}f}".replace(",", "\u202f")
+        return formatted
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _filter_fmt1(value) -> str:
+    """Format a number to 1 decimal place, or '—' if None."""
+    if value is None:
+        return "\u2014"
+    try:
+        return f"{float(value):.1f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _filter_ugr_fmt(value) -> str:
+    """Format a UGR value to 1 decimal place, or '—' if None."""
+    if value is None:
+        return "\u2014"
+    try:
+        return f"{float(value):.1f}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _filter_svg_responsive(svg_str: str) -> str:
+    """Add viewBox from width/height attributes, set width=100%, remove fixed height.
+
+    Makes an SVG with fixed pixel dimensions responsive inside a flex container.
+    If the SVG already has a percentage width, it is returned unchanged.
+    If width/height attributes are absent, the SVG is returned unchanged.
+    """
+    if not svg_str:
+        return svg_str
+
+    # Match the opening <svg ...> tag (attributes only, no child elements)
+    m_tag = re.search(r"<svg(\s[^>]*)?>", svg_str, re.DOTALL)
+    if not m_tag:
+        return svg_str
+
+    attrs = m_tag.group(1) or ""
+
+    m_w = re.search(r'\bwidth="([^"]*)"', attrs)
+    m_h = re.search(r'\bheight="([^"]*)"', attrs)
+    if not m_w or not m_h:
+        return svg_str
+
+    w_val = m_w.group(1)
+    h_val = m_h.group(1)
+
+    # Already responsive
+    if "%" in w_val:
+        return svg_str
+
+    new_attrs = attrs
+
+    # Add viewBox if absent
+    if "viewBox" not in new_attrs:
+        new_attrs = f' viewBox="0 0 {w_val} {h_val}"' + new_attrs
+
+    # Replace width with 100%
+    new_attrs = re.sub(r'\bwidth="[^"]*"', 'width="100%"', new_attrs)
+
+    # Remove height
+    new_attrs = re.sub(r'\s*\bheight="[^"]*"', "", new_attrs)
+
+    return svg_str[: m_tag.start()] + f"<svg{new_attrs}>" + svg_str[m_tag.end() :]
+
+
+# ── Renderer ──────────────────────────────────────────────────────────────────
+
+class ReportRenderer:
+    """Render a ReportData object to HTML (and optionally PDF)."""
+
+    @classmethod
+    def render_html(
+        cls,
+        data: ReportData,
+        template_path: Path | None = None,
+    ) -> str:
+        """Return the rendered HTML as a string."""
+        env = cls._make_env(template_path)
+        template_name = template_path.name if template_path else "default.html"
+        tmpl = env.get_template(template_name)
+        return tmpl.render(data=data)
+
+    @classmethod
+    def render_pdf(
+        cls,
+        data: ReportData,
+        output_path: Path,
+        template_path: Path | None = None,
+    ) -> None:
+        """Write a PDF to *output_path* via WeasyPrint."""
+        from weasyprint import HTML  # lazy import — WeasyPrint requires GTK on Windows
+
+        html_str = cls.render_html(data, template_path)
+        tmpl_dir = template_path.parent if template_path else _TEMPLATES_DIR
+        HTML(string=html_str, base_url=str(tmpl_dir)).write_pdf(str(output_path))
+
+    @classmethod
+    def _make_env(cls, template_path: Path | None) -> Environment:
+        tmpl_dir = template_path.parent if template_path else _TEMPLATES_DIR
+        env = Environment(
+            loader=FileSystemLoader(str(tmpl_dir)),
+            autoescape=True,
+        )
+        env.filters["thousands"]     = _filter_thousands
+        env.filters["fmt1"]          = _filter_fmt1
+        env.filters["ugr_fmt"]       = _filter_ugr_fmt
+        env.filters["svg_responsive"] = _filter_svg_responsive
+        return env

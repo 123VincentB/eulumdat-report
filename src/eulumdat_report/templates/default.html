@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Photometric Datasheet — {{ data.luminaire_name }}</title>
+<style>
+{% include 'default.css' %}
+</style>
+</head>
+<body>
+<div class="a4-page">
+
+<!-- ═══ REPORT HEADER ═══ -->
+<div class="report-header">
+  <div>
+    <div class="report-title">Photometric Datasheet</div>
+    <div class="report-subtitle">Luminaire Performance Report</div>
+  </div>
+  <div class="report-meta">
+    <strong>Source file</strong>&nbsp; {{ data.source_file }}<br>
+    <strong>Generated</strong>&nbsp; {{ data.generated_at }}<br>
+    <strong>Tool</strong>&nbsp; eulumdat-report v{{ data.package_version }}
+  </div>
+</div>
+
+<!-- ═══ IDENTIFICATION ═══ -->
+<div class="identification">
+  <div class="ident-field">
+    <span class="ident-label">Luminaire name</span>
+    <span class="ident-value large">{{ data.luminaire_name }}</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Manufacturer</span>
+    <span class="ident-value">{{ data.company }}</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Catalogue no.</span>
+    <span class="ident-value">{{ data.luminaire_number }}</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Date / User</span>
+    <span class="ident-value">{{ data.date_user }}</span>
+  </div>
+  <div class="ident-divider"></div>
+  <div class="ident-field">
+    <span class="ident-label">Angular grid</span>
+    <span class="ident-value">ISYM&nbsp;{{ data.isym }} &middot; {{ data.mc }}C &times; {{ data.ng }}&gamma;</span>
+  </div>
+</div>
+
+<!-- ═══ GEOMETRY + LAMP DATA ═══ -->
+<div class="two-col">
+  <div class="col-half">
+    <div class="data-card">
+      <div class="section-label">Geometry</div>
+      <table class="data-table">
+        <tr><td>Luminaire length</td>      <td class="val-blue">{{ data.length | fmt1 }} mm</td></tr>
+        <tr><td>Luminaire width</td>       <td class="val-blue">{{ data.width | fmt1 }} mm</td></tr>
+        <tr><td>Luminaire height</td>      <td class="val-blue">{{ data.height | fmt1 }} mm</td></tr>
+        <tr class="row-sep">
+          <td>Luminous area length</td>    <td>{{ data.length_lum_area | fmt1 }} mm</td></tr>
+        <tr><td>Luminous area width</td>   <td>{{ data.width_lum_area | fmt1 }} mm</td></tr>
+        <tr><td>Luminous height C0&deg;</td>   <td>{{ data.h_lum_c0 | fmt1 }} mm</td></tr>
+        <tr><td>Luminous height C90&deg;</td>  <td>{{ data.h_lum_c90 | fmt1 }} mm</td></tr>
+        <tr><td>Luminous height C180&deg;</td> <td>{{ data.h_lum_c180 | fmt1 }} mm</td></tr>
+        <tr><td>Luminous height C270&deg;</td> <td>{{ data.h_lum_c270 | fmt1 }} mm</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="col-half">
+    <div class="data-card">
+      <div class="section-label">Lamp data</div>
+      <table class="data-table">
+        <tr><td>Lamp type</td>                    <td class="val-blue">{{ data.lamp_name }}</td></tr>
+        <tr><td>Number of lamps</td>              <td>{{ data.lamp_count }}</td></tr>
+        <tr><td>Luminous flux (total)</td>        <td>{{ (data.lamp_count * data.lamp_flux) | thousands }} lm</td></tr>
+        <tr><td>Power</td>                        <td>{{ data.lamp_watt | fmt1 }} W</td></tr>
+        {% if data.luminous_efficacy is not none %}
+        <tr><td>Luminous efficacy</td>            <td class="val-blue">{{ data.luminous_efficacy | fmt1 }} lm/W</td></tr>
+        {% endif %}
+        <tr class="row-sep">
+          <td>LORL</td>                           <td>{{ data.lorl | fmt1 }} %</td></tr>
+        {% if data.dff is not none %}
+        <tr><td>Downward flux fraction (DFF)</td> <td class="val-accent">{{ data.dff | fmt1 }} %</td></tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DIAGRAMS ═══ -->
+<div class="diagrams-row">
+
+  <!-- Intensity -->
+  <div class="diagram-card">
+    <div class="diagram-title">Polar Intensity Diagram &nbsp;[cd / klm]</div>
+
+    {% if data.svg_intensity %}
+    <div class="diagram-svg">{{ data.svg_intensity | svg_responsive | safe }}</div>
+    {% else %}
+    <div class="diagram-no-data">Intensity diagram not available</div>
+    {% endif %}
+
+    <!-- C-plane legend -->
+    <div class="diagram-legend">
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#0d2b45" stroke-width="1.8"/>
+        </svg>
+        <span>C180&deg;</span>
+      </div>
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#2e7ab8" stroke-width="1.8" stroke-dasharray="4 2"/>
+        </svg>
+        <span>C270&deg;</span>
+      </div>
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#0d2b45" stroke-width="1.8"/>
+        </svg>
+        <span>C0&deg;</span>
+      </div>
+      <div class="legend-item">
+        <svg width="22" height="8" viewBox="0 0 22 8">
+          <line x1="0" y1="4" x2="22" y2="4" stroke="#2e7ab8" stroke-width="1.8" stroke-dasharray="4 2"/>
+        </svg>
+        <span>C90&deg;</span>
+      </div>
+    </div>
+
+    <!-- Half-angles + FWHM -->
+    {% if data.half_angles is not none %}
+    <div class="ha-grid">
+      <!-- C0 / C180 group -->
+      <div class="ha-group">
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C180&deg;</span>
+          {% if data.half_angles[180.0] is not none %}
+          <span class="ha-value">{{ data.half_angles[180.0] | fmt1 }}&deg;</span>
+          {% else %}
+          <span class="ha-value none-val">&mdash;</span>
+          {% endif %}
+        </div>
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C0&deg;</span>
+          {% if data.half_angles[0.0] is not none %}
+          <span class="ha-value">{{ data.half_angles[0.0] | fmt1 }}&deg;</span>
+          {% else %}
+          <span class="ha-value none-val">&mdash;</span>
+          {% endif %}
+        </div>
+        <div class="ha-fwhm">
+          <span class="ha-fwhm-label">FWHM C0/C180</span>
+          {% if data.fwhm and data.fwhm["C0_C180"] is not none %}
+          <span class="ha-fwhm-value">{{ data.fwhm["C0_C180"] | fmt1 }}&deg;</span>
+          {% else %}
+          <span class="ha-fwhm-value none-val">&mdash;</span>
+          {% endif %}
+        </div>
+      </div>
+      <!-- C90 / C270 group -->
+      <div class="ha-group">
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C270&deg;</span>
+          {% if data.half_angles[270.0] is not none %}
+          <span class="ha-value">{{ data.half_angles[270.0] | fmt1 }}&deg;</span>
+          {% else %}
+          <span class="ha-value none-val">&mdash;</span>
+          {% endif %}
+        </div>
+        <div class="ha-row">
+          <span class="ha-label">Half-angle C90&deg;</span>
+          {% if data.half_angles[90.0] is not none %}
+          <span class="ha-value">{{ data.half_angles[90.0] | fmt1 }}&deg;</span>
+          {% else %}
+          <span class="ha-value none-val">&mdash;</span>
+          {% endif %}
+        </div>
+        <div class="ha-fwhm">
+          <span class="ha-fwhm-label">FWHM C90/C270</span>
+          {% if data.fwhm and data.fwhm["C90_C270"] is not none %}
+          <span class="ha-fwhm-value">{{ data.fwhm["C90_C270"] | fmt1 }}&deg;</span>
+          {% else %}
+          <span class="ha-fwhm-value none-val">&mdash;</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Luminance -->
+  <div class="diagram-card">
+    <div class="diagram-title">Polar Luminance Diagram &nbsp;[cd / m&sup2;]</div>
+
+    {% if data.svg_luminance %}
+    <div class="diagram-svg">{{ data.svg_luminance | svg_responsive | safe }}</div>
+    {% else %}
+    <div class="diagram-no-data">Luminance diagram not available</div>
+    {% endif %}
+
+    {% if data.lum_max is not none %}
+    <div class="diagram-stats">
+      <div class="stat-item">
+        <span class="stat-label">Maximum luminance</span>
+        <span class="stat-value accent">{{ data.lum_max | thousands }} cd/m&sup2;</span>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- ═══ UGR ═══ -->
+<div class="ugr-section">
+  <div class="section-label">Glare Evaluation &mdash; UGR &nbsp;(CIE&nbsp;117 / CIE&nbsp;190, SHR&nbsp;=&nbsp;0.25)</div>
+
+  {% if data.isym in (1, 4) and data.ugr %}
+
+  <div style="margin-top: 8px;">
+  <table class="ugr">
+    <thead>
+      <tr>
+        <th class="rho-label" colspan="2">&#961; Ceiling</th>
+        {% for ref in data.ugr.reflectances %}<th class="rho-val">{{ ref[0] }}</th>{% endfor %}
+        {% for ref in data.ugr.reflectances %}<th class="rho-val{% if loop.first %} sep-left{% endif %}">{{ ref[0] }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th class="rho-label" colspan="2">&#961; Walls</th>
+        {% for ref in data.ugr.reflectances %}<th class="rho-val">{{ ref[1] }}</th>{% endfor %}
+        {% for ref in data.ugr.reflectances %}<th class="rho-val{% if loop.first %} sep-left{% endif %}">{{ ref[1] }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th class="rho-label" colspan="2">&#961; Floor</th>
+        {% for ref in data.ugr.reflectances %}<th class="rho-val">{{ ref[2] }}</th>{% endfor %}
+        {% for ref in data.ugr.reflectances %}<th class="rho-val{% if loop.first %} sep-left{% endif %}">{{ ref[2] }}</th>{% endfor %}
+      </tr>
+      <tr>
+        <th class="room-hdr" colspan="2">Room size<br><span style="display:inline-block;width:26px">X</span>Y</th>
+        <th class="orient" colspan="5">Viewing direction at right angles (crosswise)</th>
+        <th class="orient sep-left" colspan="5">Viewing direction parallel (endwise)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set sep_indices = [0, 6, 12, 16] %}
+      {% for i in range(19) %}
+      {% set room = data.ugr.room_sizes[i] %}
+      {% set x_h  = room[0] %}
+      {% set y_h  = room[1] %}
+      {% set row_cw = data.ugr.values["crosswise"][i] %}
+      {% set row_ew = data.ugr.values["endwise"][i] %}
+      {% set is_hl_room = (x_h == 4 and y_h == 8) or (x_h == 8 and y_h == 4) %}
+      <tr{% if i in sep_indices %} class="row-sep"{% endif %}>
+        <td class="label">{{ x_h }}H</td>
+        <td class="label">{{ y_h }}H</td>
+        {% for c in range(5) %}
+        <td class="value{% if is_hl_room and c == 0 %} ugr-highlight{% endif %}">{{ row_cw[c] | ugr_fmt }}</td>
+        {% endfor %}
+        {% for c in range(5) %}
+        <td class="value{% if is_hl_room and c == 0 %} ugr-highlight{% endif %}{% if c == 0 %} sep-left{% endif %}">{{ row_ew[c] | ugr_fmt }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <div class="ugr-shr">SHR = {{ data.ugr.shr }}</div>
+
+  {% else %}
+    <div class="ugr-warning">
+      &#9888;&nbsp; The UGR method is not applicable for this luminaire
+      (ISYM&nbsp;=&nbsp;{{ data.isym }} &mdash; asymmetric intensity distribution).
+      A UGR catalogue table requires full rotational or quadrant symmetry
+      (ISYM&nbsp;=&nbsp;1 or ISYM&nbsp;=&nbsp;4).
+    </div>
+  {% endif %}
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<div class="report-footer">
+  <span>Generated by <strong>eulumdat-report v{{ data.package_version }}</strong></span>
+  <span>{{ data.source_file }} &nbsp;&middot;&nbsp; {{ data.generated_at }}</span>
+</div>
+
+</div><!-- /.a4-page -->
+</body>
+</html>

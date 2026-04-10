@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>UGR Table</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Calibri, Arial, sans-serif;
+    font-size: 12.5px;
+    background: #eef2f6;
+    display: flex;
+    justify-content: center;
+    padding: 36px 20px;
+  }
+  .wrapper { overflow-x: auto; }
+  table {
+    border-collapse: collapse;
+    background: #fff;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.13);
+  }
+  caption {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: left;
+    padding: 0 0 8px 2px;
+    color: #22304a;
+    letter-spacing: 0.02em;
+  }
+  th, td {
+    border: 1px solid #c8d2dc;
+    padding: 5px 12px;
+    text-align: center;
+    white-space: nowrap;
+  }
+  /* Label de réflectance (colonne gauche, lignes 1-3) */
+  th.rho-label {
+    background: #e5eaf0;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: left;
+    padding-left: 10px;
+  }
+  /* Valeurs de réflectance */
+  th.rho-val {
+    background: #e5eaf0;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  /* En-tête orientation (ligne 4) */
+  th.orient {
+    background: #d0dce8;
+    font-style: italic;
+    font-weight: 600;
+    color: #1e3050;
+    font-size: 11.5px;
+  }
+  /* En-tête Room size (ligne 4) */
+  th.room-header {
+    background: #e5eaf0;
+    font-weight: 700;
+    color: #1e3050;
+    font-size: 12px;
+    vertical-align: middle;
+    text-align: center;
+  }
+  /* Cellules de dimension locale */
+  td.label {
+    background: #f0f4f8;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+  /* Valeurs UGR */
+  td.value {
+    color: #1a1a2e;
+  }
+  /* Séparateur vertical orientations */
+  .sep-left {
+    border-left: 2px solid #7a8fa6 !important;
+  }
+  /* Séparateur horizontal groupes X/H */
+  tr.row-sep > td, tr.row-sep > th {
+    border-top: 2px solid #7a8fa6 !important;
+  }
+  /* Surbrillance */
+  td.highlight {
+    background-color: #ffe566 !important;
+    font-weight: 700;
+    color: #7a4800;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+<table>
+<caption>UGR Table &mdash; Unified Glare Rating</caption>
+<thead>
+<tr><th class="rho-label" colspan="2">&#961; Ceiling</th><th class="rho-val">70</th><th class="rho-val">70</th><th class="rho-val">50</th><th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val sep-left">70</th><th class="rho-val">70</th><th class="rho-val">50</th><th class="rho-val">50</th><th class="rho-val">30</th></tr>
+<tr><th class="rho-label" colspan="2">&#961; Walls</th><th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val">30</th><th class="rho-val sep-left">50</th><th class="rho-val">30</th><th class="rho-val">50</th><th class="rho-val">30</th><th class="rho-val">30</th></tr>
+<tr><th class="rho-label" colspan="2">&#961; Floor</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val sep-left">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th><th class="rho-val">20</th></tr>
+<tr><th class="room-header" colspan="2">Room size<br><span style="display:inline-block;width:36px">X</span>Y</th><th class="orient" colspan="5">Viewing direction at right angles (crosswise)</th><th class="orient sep-left" colspan="5">Viewing direction parallel (endwise)</th></tr>
+</thead>
+<tbody>
+<tr class="row-sep"><td class="label">2H</td><td class="label">2H</td><td class="value">17.1</td><td class="value">18.2</td><td class="value">17.5</td><td class="value">18.5</td><td class="value">18.8</td><td class="value sep-left">19.9</td><td class="value">21.0</td><td class="value">20.3</td><td class="value">21.3</td><td class="value">21.6</td></tr>
+<tr><td class="label">2H</td><td class="label">3H</td><td class="value">17.5</td><td class="value">18.4</td><td class="value">17.8</td><td class="value">18.7</td><td class="value">19.1</td><td class="value sep-left">19.9</td><td class="value">20.9</td><td class="value">20.3</td><td class="value">21.2</td><td class="value">21.6</td></tr>
+<tr><td class="label">2H</td><td class="label">4H</td><td class="value">17.6</td><td class="value">18.5</td><td class="value">18.0</td><td class="value">18.8</td><td class="value">19.2</td><td class="value sep-left">19.9</td><td class="value">20.8</td><td class="value">20.3</td><td class="value">21.2</td><td class="value">21.5</td></tr>
+<tr><td class="label">2H</td><td class="label">6H</td><td class="value">17.7</td><td class="value">18.5</td><td class="value">18.1</td><td class="value">18.9</td><td class="value">19.3</td><td class="value sep-left">19.9</td><td class="value">20.7</td><td class="value">20.4</td><td class="value">21.1</td><td class="value">21.5</td></tr>
+<tr><td class="label">2H</td><td class="label">8H</td><td class="value">17.7</td><td class="value">18.5</td><td class="value">18.2</td><td class="value">18.9</td><td class="value">19.3</td><td class="value sep-left">19.9</td><td class="value">20.7</td><td class="value">20.4</td><td class="value">21.1</td><td class="value">21.5</td></tr>
+<tr><td class="label">2H</td><td class="label">12H</td><td class="value">17.7</td><td class="value">18.4</td><td class="value">18.1</td><td class="value">18.8</td><td class="value">19.2</td><td class="value sep-left">19.9</td><td class="value">20.6</td><td class="value">20.4</td><td class="value">21.0</td><td class="value">21.4</td></tr>
+<tr class="row-sep"><td class="label">4H</td><td class="label">2H</td><td class="value">17.1</td><td class="value">17.9</td><td class="value">17.5</td><td class="value">18.3</td><td class="value">18.7</td><td class="value sep-left">19.7</td><td class="value">20.6</td><td class="value">20.1</td><td class="value">21.0</td><td class="value">21.3</td></tr>
+<tr><td class="label">4H</td><td class="label">3H</td><td class="value">17.5</td><td class="value">18.2</td><td class="value">17.9</td><td class="value">18.6</td><td class="value">19.0</td><td class="value sep-left">19.8</td><td class="value">20.5</td><td class="value">20.2</td><td class="value">20.9</td><td class="value">21.3</td></tr>
+<tr><td class="label">4H</td><td class="label">4H</td><td class="value">17.7</td><td class="value">18.4</td><td class="value">18.2</td><td class="value">18.8</td><td class="value">19.2</td><td class="value sep-left">19.9</td><td class="value">20.5</td><td class="value">20.3</td><td class="value">20.9</td><td class="value">21.4</td></tr>
+<tr><td class="label">4H</td><td class="label">6H</td><td class="value">17.9</td><td class="value">18.5</td><td class="value">18.4</td><td class="value">18.9</td><td class="value">19.4</td><td class="value sep-left">19.9</td><td class="value">20.5</td><td class="value">20.4</td><td class="value">20.9</td><td class="value">21.4</td></tr>
+<tr><td class="label">4H</td><td class="label">8H</td><td class="highlight">17.9</td><td class="value">18.4</td><td class="value">18.4</td><td class="value">18.9</td><td class="value">19.3</td><td class="highlight sep-left">19.9</td><td class="value">20.4</td><td class="value">20.4</td><td class="value">20.9</td><td class="value">21.4</td></tr>
+<tr><td class="label">4H</td><td class="label">12H</td><td class="value">17.9</td><td class="value">18.3</td><td class="value">18.4</td><td class="value">18.8</td><td class="value">19.3</td><td class="value sep-left">19.9</td><td class="value">20.4</td><td class="value">20.4</td><td class="value">20.9</td><td class="value">21.3</td></tr>
+<tr class="row-sep"><td class="label">8H</td><td class="label">4H</td><td class="highlight">17.7</td><td class="value">18.2</td><td class="value">18.2</td><td class="value">18.7</td><td class="value">19.1</td><td class="highlight sep-left">19.8</td><td class="value">20.3</td><td class="value">20.3</td><td class="value">20.7</td><td class="value">21.2</td></tr>
+<tr><td class="label">8H</td><td class="label">6H</td><td class="value">17.9</td><td class="value">18.3</td><td class="value">18.4</td><td class="value">18.8</td><td class="value">19.3</td><td class="value sep-left">19.9</td><td class="value">20.3</td><td class="value">20.4</td><td class="value">20.8</td><td class="value">21.3</td></tr>
+<tr><td class="label">8H</td><td class="label">8H</td><td class="value">17.9</td><td class="value">18.3</td><td class="value">18.5</td><td class="value">18.8</td><td class="value">19.3</td><td class="value sep-left">19.9</td><td class="value">20.3</td><td class="value">20.5</td><td class="value">20.8</td><td class="value">21.3</td></tr>
+<tr><td class="label">8H</td><td class="label">12H</td><td class="value">17.9</td><td class="value">18.2</td><td class="value">18.4</td><td class="value">18.7</td><td class="value">19.3</td><td class="value sep-left">20.0</td><td class="value">20.3</td><td class="value">20.5</td><td class="value">20.8</td><td class="value">21.3</td></tr>
+<tr class="row-sep"><td class="label">12H</td><td class="label">4H</td><td class="value">17.7</td><td class="value">18.1</td><td class="value">18.2</td><td class="value">18.6</td><td class="value">19.1</td><td class="value sep-left">19.7</td><td class="value">20.2</td><td class="value">20.2</td><td class="value">20.6</td><td class="value">21.1</td></tr>
+<tr><td class="label">12H</td><td class="label">6H</td><td class="value">17.9</td><td class="value">18.3</td><td class="value">18.4</td><td class="value">18.7</td><td class="value">19.3</td><td class="value sep-left">19.8</td><td class="value">20.2</td><td class="value">20.4</td><td class="value">20.7</td><td class="value">21.2</td></tr>
+<tr><td class="label">12H</td><td class="label">8H</td><td class="value">17.9</td><td class="value">18.2</td><td class="value">18.4</td><td class="value">18.7</td><td class="value">19.3</td><td class="value sep-left">19.9</td><td class="value">20.2</td><td class="value">20.4</td><td class="value">20.7</td><td class="value">21.3</td></tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>

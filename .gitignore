@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+data/output/
+*.ldt.svg
+*.pdf
+PROMPT_*.md
+.pytest_cache/
