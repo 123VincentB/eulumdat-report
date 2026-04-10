@@ -9,4 +9,6 @@ data/output/
 *.ldt.svg
 *.pdf
 PROMPT_*.md
+CONTEXT*.md
+CLAUDE.md
 .pytest_cache/
