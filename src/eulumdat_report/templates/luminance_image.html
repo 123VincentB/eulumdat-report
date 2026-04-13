@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+{% include 'default.css' %}
+body { background: white !important; padding: 0 !important; margin: 0 !important; display: block !important; }
+/* Font overrides for image export (10pt main text) */
+table.lum-table { font-size: 10pt; }
+table.lum-table th, table.lum-table td { font-size: 10pt; }
+table.lum-table th.block-hdr, table.lum-table th.c-hdr { font-size: 9pt; }
+.section-label { font-size: 8.5pt; }
+.lum-footer { font-size: 8.5pt; }
+</style>
+</head>
+<body>
+<div class="lum-image-wrapper" style="padding: 10px; background: white; display: block; width: 100%; box-sizing: border-box;">
+
+  <div class="lum-section">
+    <div class="section-label">Luminance Table &nbsp;[cd / m&sup2;]</div>
+
+    {% if data.lum_table %}
+    {% set lt = data.lum_table %}
+    {% set block1 = lt.c_planes[:12] %}
+    {% set block2 = lt.c_planes[12:] %}
+    {% set _flat = lt.values | sum(start=[]) %}
+    {% set lum_max_val = _flat | select("number") | list | max %}
+
+    <div style="margin-top: 8px;">
+
+    <!-- Block 1 : C0–C165 -->
+    <table class="lum-table" style="margin-bottom: 4px;">
+      <colgroup>
+        <col style="width:5%">
+        {% for _ in block1 %}<col style="width:{{ (95/12)|round(2) }}%">{% endfor %}
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="block-hdr" colspan="{{ 1 + block1|length }}">C0&deg; &mdash; C165&deg;</th>
+        </tr>
+        <tr>
+          <th class="c-hdr">&gamma;</th>
+          {% for c in block1 %}<th class="c-hdr">C{{ c|int }}&deg;</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for g_idx in range(lt.g_angles|length) %}
+        <tr>
+          <td class="g-label">{{ lt.g_angles[g_idx]|int }}&deg;</td>
+          {% for c_idx in range(block1|length) %}
+          {% set v = lt.values[g_idx][c_idx] %}
+          <td class="value{% if v is not none and v == lum_max_val %} lum-highlight{% endif %}">{{ v | lum_fmt }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <!-- Block 2 : C180–C345 -->
+    <table class="lum-table">
+      <colgroup>
+        <col style="width:5%">
+        {% for _ in block2 %}<col style="width:{{ (95/12)|round(2) }}%">{% endfor %}
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="block-hdr" colspan="{{ 1 + block2|length }}">C180&deg; &mdash; C345&deg;</th>
+        </tr>
+        <tr>
+          <th class="c-hdr">&gamma;</th>
+          {% for c in block2 %}<th class="c-hdr">C{{ c|int }}&deg;</th>{% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for g_idx in range(lt.g_angles|length) %}
+        <tr>
+          <td class="g-label">{{ lt.g_angles[g_idx]|int }}&deg;</td>
+          {% for c_idx in range(block2|length) %}
+          {% set v = lt.values[g_idx][12 + c_idx] %}
+          <td class="value{% if v is not none and v == lum_max_val %} lum-highlight{% endif %}">{{ v | lum_fmt }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    </div>
+    <div class="lum-footer">
+      <span>Luminous flux: {{ lt.flux_total | thousands }} lm</span>
+      <span>Luminance [cd/m&sup2;]</span>
+    </div>
+
+    {% else %}
+      <div class="ugr-warning">
+        &#9888;&nbsp; Luminance table data not available for this luminaire.
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+</body>
+</html>

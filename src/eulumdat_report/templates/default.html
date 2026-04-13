@@ -215,6 +215,81 @@
 
 </div>
 
+<!-- ═══ LUMINANCE TABLE ═══ -->
+{% if show_lum_table and data.lum_table %}
+{% set lt = data.lum_table %}
+{% set block1 = lt.c_planes[:12] %}
+{% set block2 = lt.c_planes[12:] %}
+{% set _flat = lt.values | sum(start=[]) %}
+{% set lum_max_val = _flat | select("number") | list | max %}
+<div class="lum-section">
+  <div class="section-label">Luminance Table &nbsp;[cd / m&sup2;]</div>
+  <div style="margin-top: 6px;">
+
+  <!-- Block 1 : C0–C165 -->
+  <table class="lum-table" style="margin-bottom: 4px;">
+    <colgroup>
+      <col style="width:5%">
+      {% for _ in block1 %}<col style="width:{{ (95/12)|round(2) }}%">{% endfor %}
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="block-hdr" colspan="{{ 1 + block1|length }}">C0&deg; &mdash; C165&deg;</th>
+      </tr>
+      <tr>
+        <th class="c-hdr">&gamma;</th>
+        {% for c in block1 %}<th class="c-hdr">C{{ c|int }}&deg;</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for g_idx in range(lt.g_angles|length) %}
+      <tr>
+        <td class="g-label">{{ lt.g_angles[g_idx]|int }}&deg;</td>
+        {% for c_idx in range(block1|length) %}
+        {% set v = lt.values[g_idx][c_idx] %}
+        <td class="value{% if v is not none and v == lum_max_val %} lum-highlight{% endif %}">{{ v | lum_fmt }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Block 2 : C180–C345 -->
+  <table class="lum-table">
+    <colgroup>
+      <col style="width:5%">
+      {% for _ in block2 %}<col style="width:{{ (95/12)|round(2) }}%">{% endfor %}
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="block-hdr" colspan="{{ 1 + block2|length }}">C180&deg; &mdash; C345&deg;</th>
+      </tr>
+      <tr>
+        <th class="c-hdr">&gamma;</th>
+        {% for c in block2 %}<th class="c-hdr">C{{ c|int }}&deg;</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for g_idx in range(lt.g_angles|length) %}
+      <tr>
+        <td class="g-label">{{ lt.g_angles[g_idx]|int }}&deg;</td>
+        {% for c_idx in range(block2|length) %}
+        {% set v = lt.values[g_idx][12 + c_idx] %}
+        <td class="value{% if v is not none and v == lum_max_val %} lum-highlight{% endif %}">{{ v | lum_fmt }}</td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  </div>
+  <div class="lum-footer">
+    <span>Luminous flux: {{ lt.flux_total | thousands }} lm</span>
+    <span>Luminance [cd/m&sup2;]</span>
+  </div>
+</div>
+{% endif %}
+
 <!-- ═══ UGR ═══ -->
 <div class="ugr-section">
   <div class="section-label">Glare Evaluation &mdash; UGR &nbsp;(CIE&nbsp;117 / CIE&nbsp;190, SHR&nbsp;=&nbsp;0.25)</div>
@@ -273,7 +348,10 @@
     </tbody>
   </table>
   </div>
-  <div class="ugr-shr">SHR = {{ data.ugr.shr }}</div>
+  <div class="ugr-shr">
+    <span>Corrected UGR &mdash; luminous flux &Phi;&nbsp;=&nbsp;{{ (data.lamp_count * data.lamp_flux) | thousands }} lm &nbsp;(CIE&nbsp;190:2010&nbsp;&sect;4.1)</span>
+    <span>SHR&nbsp;=&nbsp;{{ data.ugr.shr }}</span>
+  </div>
 
   {% else %}
     <div class="ugr-warning">

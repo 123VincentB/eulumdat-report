@@ -28,15 +28,17 @@ logger = logging.getLogger(__name__)
     default=None,
     help="Custom Jinja2 HTML template (default: built-in default.html).",
 )
-@click.option("--html/--no-html", default=True, show_default=True, help="Generate HTML output.")
-@click.option("--pdf/--no-pdf",   default=True, show_default=True, help="Generate PDF output.")
-@click.option("-v", "--verbose",  is_flag=True, help="Enable debug logging.")
+@click.option("--html/--no-html",           default=True,  show_default=True, help="Generate HTML output.")
+@click.option("--pdf/--no-pdf",             default=True,  show_default=True, help="Generate PDF output.")
+@click.option("--lum-table/--no-lum-table", default=False, show_default=True, help="Include luminance table section.")
+@click.option("-v", "--verbose",            is_flag=True,  help="Enable debug logging.")
 def main(
     ldt_file: Path,
     output_dir: Path | None,
     template: Path | None,
     html: bool,
     pdf: bool,
+    lum_table: bool,
     verbose: bool,
 ) -> None:
     """Generate a photometric datasheet (HTML/PDF) from an EULUMDAT .ldt file."""
@@ -66,7 +68,7 @@ def main(
     if html:
         html_path = dest / f"{stem}.html"
         try:
-            html_str = ReportRenderer.render_html(data, template_path=template)
+            html_str = ReportRenderer.render_html(data, template_path=template, show_lum_table=lum_table)
             html_path.write_text(html_str, encoding="utf-8")
             click.echo(f"HTML: {html_path}")
         except Exception as exc:
@@ -77,7 +79,7 @@ def main(
     if pdf:
         pdf_path = dest / f"{stem}.pdf"
         try:
-            ReportRenderer.render_pdf(data, pdf_path, template_path=template)
+            ReportRenderer.render_pdf(data, pdf_path, template_path=template, show_lum_table=lum_table)
             click.echo(f"PDF : {pdf_path}")
         except ImportError:
             click.echo(

@@ -49,6 +49,23 @@ def _filter_ugr_fmt(value) -> str:
         return str(value)
 
 
+def _filter_lum_fmt(value) -> str:
+    """Format a luminance value (cd/m²): integer up to 99 999, scientific above.
+
+    Examples: 1234 → '1234', 12345 → '12345', 123456 → '1.23e5'.
+    """
+    if value is None:
+        return "\u2014"
+    try:
+        n = int(round(float(value)))
+        if n < 100_000:
+            return str(n)
+        mantissa, exp = f"{n:.2e}".split("e")
+        return f"{mantissa}e{int(exp)}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
 def _filter_svg_responsive(svg_str: str) -> str:
     """Add viewBox from width/height attributes, set width=100%, remove fixed height.
 
@@ -103,12 +120,13 @@ class ReportRenderer:
         cls,
         data: ReportData,
         template_path: Path | None = None,
+        show_lum_table: bool = False,
     ) -> str:
         """Return the rendered HTML as a string."""
         env = cls._make_env(template_path)
         template_name = template_path.name if template_path else "default.html"
         tmpl = env.get_template(template_name)
-        return tmpl.render(data=data)
+        return tmpl.render(data=data, show_lum_table=show_lum_table)
 
     @classmethod
     def render_pdf(
@@ -116,11 +134,12 @@ class ReportRenderer:
         data: ReportData,
         output_path: Path,
         template_path: Path | None = None,
+        show_lum_table: bool = False,
     ) -> None:
         """Write a PDF to *output_path* via Playwright (Chromium headless)."""
         from playwright.sync_api import sync_playwright  # lazy import
 
-        html_str = cls.render_html(data, template_path)
+        html_str = cls.render_html(data, template_path, show_lum_table=show_lum_table)
         with sync_playwright() as p:
             browser = p.chromium.launch()
             page = browser.new_page()
@@ -139,14 +158,89 @@ class ReportRenderer:
             browser.close()
 
     @classmethod
+    def render_ugr_image(
+        cls,
+        data: ReportData,
+        width_cm: float = 17.0,
+        dpi: int = 150,
+    ) -> bytes:
+        """Render the UGR section as a PNG image (bytes) via Playwright element screenshot.
+
+        Parameters
+        ----------
+        data : ReportData
+            Collected photometric data.
+        width_cm : float
+            Target image width in centimetres (default 17 cm).
+        dpi : int
+            Output resolution in dots per inch (default 150).
+        """
+        from playwright.sync_api import sync_playwright  # lazy import
+
+        viewport_width = int(width_cm / 2.54 * 96)
+        device_scale_factor = dpi / 96
+
+        tmpl_path = _TEMPLATES_DIR / "ugr_image.html"
+        env = cls._make_env(tmpl_path)
+        html_str = env.get_template("ugr_image.html").render(data=data)
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page(
+                viewport={"width": viewport_width, "height": 3000},
+                device_scale_factor=device_scale_factor,
+            )
+            page.set_content(html_str, wait_until="networkidle")
+            png = page.locator(".ugr-image-wrapper").screenshot()
+            browser.close()
+        return png
+
+    @classmethod
+    def render_luminance_image(
+        cls,
+        data: ReportData,
+        width_cm: float = 17.0,
+        dpi: int = 150,
+    ) -> bytes:
+        """Render the luminance table as a PNG image (bytes) via Playwright element screenshot.
+
+        Parameters
+        ----------
+        data : ReportData
+            Collected photometric data (must have lum_table populated).
+        width_cm : float
+            Target image width in centimetres (default 17 cm).
+        dpi : int
+            Output resolution in dots per inch (default 150).
+        """
+        from playwright.sync_api import sync_playwright  # lazy import
+
+        viewport_width = int(width_cm / 2.54 * 96)
+        device_scale_factor = dpi / 96
+
+        tmpl_path = _TEMPLATES_DIR / "luminance_image.html"
+        env = cls._make_env(tmpl_path)
+        html_str = env.get_template("luminance_image.html").render(data=data)
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page(
+                viewport={"width": viewport_width, "height": 3000},
+                device_scale_factor=device_scale_factor,
+            )
+            page.set_content(html_str, wait_until="networkidle")
+            png = page.locator(".lum-image-wrapper").screenshot()
+            browser.close()
+        return png
+
+    @classmethod
     def _make_env(cls, template_path: Path | None) -> Environment:
         tmpl_dir = template_path.parent if template_path else _TEMPLATES_DIR
         env = Environment(
             loader=FileSystemLoader(str(tmpl_dir)),
             autoescape=True,
         )
-        env.filters["thousands"]     = _filter_thousands
-        env.filters["fmt1"]          = _filter_fmt1
-        env.filters["ugr_fmt"]       = _filter_ugr_fmt
+        env.filters["thousands"]      = _filter_thousands
+        env.filters["fmt1"]           = _filter_fmt1
+        env.filters["ugr_fmt"]        = _filter_ugr_fmt
+        env.filters["lum_fmt"]        = _filter_lum_fmt
         env.filters["svg_responsive"] = _filter_svg_responsive
         return env

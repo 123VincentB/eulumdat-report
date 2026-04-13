@@ -18,6 +18,9 @@ eulumdat-report luminaire.ldt --no-pdf --output-dir reports/
 # PDF only
 eulumdat-report luminaire.ldt --no-html --output-dir reports/
 
+# Include numerical luminance table (cd/m²)
+eulumdat-report luminaire.ldt --lum-table
+
 # Custom template
 eulumdat-report luminaire.ldt --template my_templates/report.html --no-pdf
 ```
@@ -41,11 +44,13 @@ print(f"{data.lum_max:.0f} cd/m²") # peak luminance
 html = ReportRenderer.render_html(data)
 Path("luminaire.html").write_text(html, encoding="utf-8")
 
+# Render to HTML with numerical luminance table
+html = ReportRenderer.render_html(data, show_lum_table=True)
+
 # Render to PDF (requires: playwright install chromium)
 ReportRenderer.render_pdf(data, Path("luminaire.pdf"))
 
 # Custom template
-from pathlib import Path
 template = Path("my_templates/report.html")
 html = ReportRenderer.render_html(data, template_path=template)
 ```
@@ -62,4 +67,35 @@ if data.ugr is not None:
         cw = data.ugr.values["crosswise"][i]   # list of 5 floats (or None)
         ew = data.ugr.values["endwise"][i]      # list of 5 floats (or None)
         print(f"{x_h}H × {y_h}H  crosswise={cw[0]:.1f}  endwise={ew[0]:.1f}")
+```
+
+## PNG export for Word / docxtpl
+
+```python
+import io
+from docxtpl import DocxTemplate, InlineImage
+from docx.shared import Mm
+from eulumdat_report import render_ugr_image, render_luminance_image
+
+# Render tables as PNG (17 cm wide, 150 dpi — Word-ready)
+ugr_png = render_ugr_image("luminaire.ldt")
+lum_png = render_luminance_image("luminaire.ldt")
+
+# Or from an already-collected ReportData (avoids parsing twice)
+from eulumdat_report.collector import ReportCollector
+data = ReportCollector.collect("luminaire.ldt")
+ugr_png = render_ugr_image(data)
+lum_png = render_luminance_image(data)
+
+# Embed in a Word template
+doc = DocxTemplate("template.docx")
+context = {
+    "ugr_table": InlineImage(doc, io.BytesIO(ugr_png), width=Mm(170)),
+    "lum_table": InlineImage(doc, io.BytesIO(lum_png), width=Mm(170)),
+}
+doc.render(context)
+doc.save("rapport.docx")
+
+# Custom size / resolution
+ugr_png = render_ugr_image("luminaire.ldt", width_cm=14.0, dpi=200)
 ```

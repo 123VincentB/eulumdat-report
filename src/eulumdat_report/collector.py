@@ -33,6 +33,17 @@ _REFLECTANCES: list[tuple[int, int, int]] = [
 
 
 @dataclass
+class LuminanceTableData:
+    """Luminance table — 24 C-planes × 5 γ angles (UGR grid, cd/m²)."""
+
+    c_planes: list[float]           # [0.0, 15.0, ..., 345.0] — 24 values
+    g_angles: list[float]           # [65.0, 70.0, 75.0, 80.0, 85.0]
+    # values[g_idx][c_idx] — shape [5][24], rounded integers cd/m²
+    values: list[list[int | None]]
+    flux_total: float               # lm (num_lamps[0] × lamp_flux[0])
+
+
+@dataclass
 class UgrTableData:
     """UGR catalogue table data — 19 rooms × 5 reflectances × 2 directions."""
 
@@ -86,6 +97,9 @@ class ReportData:
     svg_intensity: str | None
     svg_luminance: str | None
 
+    # --- Luminance table (optional — collected always, displayed on demand) ---
+    lum_table: LuminanceTableData | None
+
     # --- UGR table ---
     ugr: UgrTableData | None
 
@@ -135,14 +149,29 @@ class ReportCollector:
         except Exception as e:
             logger.warning("plot_ldt_svg failed: %s", e)
 
-        # --- Luminance diagram + maximum (eulumdat_luminance) ---
+        # --- Luminance diagram + maximum + table (eulumdat_luminance) ---
         lum_max: float | None = None
         svg_luminance: str | None = None
+        lum_table: LuminanceTableData | None = None
         try:
+            import numpy as np
             from eulumdat_luminance import LuminanceCalculator, LuminancePlot
             _lum_result = LuminanceCalculator.compute(ldt, full=False)
             lum_max = _lum_result.maximum
             svg_luminance = LuminancePlot(_lum_result).polar_svg()
+            _tbl = _lum_result.table   # ndarray (24, 5) — c_idx × g_idx
+            lum_table = LuminanceTableData(
+                c_planes   = _lum_result.c_axis.tolist(),
+                g_angles   = _lum_result.g_axis.tolist(),
+                values     = [
+                    [
+                        None if np.isnan(_tbl[c, g]) else int(round(float(_tbl[c, g])))
+                        for c in range(len(_lum_result.c_axis))
+                    ]
+                    for g in range(len(_lum_result.g_axis))
+                ],
+                flux_total = float(h.num_lamps[0]) * float(h.lamp_flux[0]),
+            )
         except ImportError:
             logger.warning("eulumdat_luminance not available — svg_luminance/lum_max set to None")
         except Exception as e:
@@ -209,5 +238,6 @@ class ReportCollector:
 
             svg_intensity = svg_intensity,
             svg_luminance = svg_luminance,
+            lum_table     = lum_table,
             ugr           = ugr,
         )

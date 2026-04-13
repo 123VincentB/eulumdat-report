@@ -9,10 +9,11 @@ import pytest
 from click.testing import CliRunner
 
 from eulumdat_report.cli import main
-from eulumdat_report.collector import ReportCollector, ReportData, UgrTableData
+from eulumdat_report.collector import ReportCollector, ReportData, UgrTableData, LuminanceTableData
 from eulumdat_report.renderer import (
     ReportRenderer,
     _filter_fmt1,
+    _filter_lum_fmt,
     _filter_svg_responsive,
     _filter_thousands,
     _filter_ugr_fmt,
@@ -192,6 +193,57 @@ class TestCollectorUgr:
                         assert 5 <= v <= 40, f"UGR value {v} out of plausible range"
 
 
+# ── Step 5b — collector: luminance table ─────────────────────────────────────
+
+class TestCollectorLuminanceTable:
+    """ReportCollector populates lum_table correctly."""
+
+    @pytest.mark.parametrize("ldt_path", ALL_SAMPLES)
+    def test_lum_table_not_none(self, ldt_path):
+        data = ReportCollector.collect(ldt_path)
+        assert data.lum_table is not None
+        assert isinstance(data.lum_table, LuminanceTableData)
+
+    def test_c_planes(self, data_isym1):
+        lt = data_isym1.lum_table
+        assert len(lt.c_planes) == 24
+        assert lt.c_planes[0] == 0.0
+        assert lt.c_planes[-1] == 345.0
+
+    def test_g_angles(self, data_isym1):
+        lt = data_isym1.lum_table
+        assert lt.g_angles == [65.0, 70.0, 75.0, 80.0, 85.0]
+
+    def test_values_shape(self, data_isym1):
+        lt = data_isym1.lum_table
+        assert len(lt.values) == 5           # 5 γ angles
+        assert all(len(row) == 24 for row in lt.values)
+
+    def test_values_are_positive_integers(self, data_isym1):
+        lt = data_isym1.lum_table
+        for row in lt.values:
+            for v in row:
+                if v is not None:
+                    assert isinstance(v, int)
+                    assert v >= 0
+
+    def test_flux_total_positive(self, data_isym1):
+        assert data_isym1.lum_table.flux_total > 0
+
+    @pytest.mark.parametrize("ldt_path", ALL_SAMPLES)
+    def test_lum_table_in_html_when_flag_true(self, ldt_path):
+        data = ReportCollector.collect(ldt_path)
+        html = ReportRenderer.render_html(data, show_lum_table=True)
+        assert 'class="lum-table"' in html
+        assert "C0" in html
+
+    @pytest.mark.parametrize("ldt_path", ALL_SAMPLES)
+    def test_lum_table_absent_when_flag_false(self, ldt_path):
+        data = ReportCollector.collect(ldt_path)
+        html = ReportRenderer.render_html(data, show_lum_table=False)
+        assert 'class="lum-table"' not in html
+
+
 # ── Step 6/7 — renderer: HTML output ─────────────────────────────────────────
 
 class TestRendererHtml:
@@ -299,6 +351,26 @@ class TestFilters:
     def test_ugr_fmt_none(self):
         assert _filter_ugr_fmt(None) == "\u2014"
 
+    def test_lum_fmt_small(self):
+        assert _filter_lum_fmt(123) == "123"
+
+    def test_lum_fmt_4digits(self):
+        assert _filter_lum_fmt(1234) == "1234"
+
+    def test_lum_fmt_5digits(self):
+        assert _filter_lum_fmt(12345) == "12345"
+
+    def test_lum_fmt_boundary(self):
+        assert _filter_lum_fmt(99999) == "99999"
+        assert _filter_lum_fmt(100000) == "1.00e5"
+
+    def test_lum_fmt_large(self):
+        assert _filter_lum_fmt(123456) == "1.23e5"
+        assert _filter_lum_fmt(1234567) == "1.23e6"
+
+    def test_lum_fmt_none(self):
+        assert _filter_lum_fmt(None) == "\u2014"
+
     def test_svg_responsive_adds_viewbox(self):
         svg = '<svg width="100" height="200" xmlns="http://www.w3.org/2000/svg"><rect/></svg>'
         result = _filter_svg_responsive(svg)
@@ -383,6 +455,70 @@ class TestCli:
 OUTPUT_DIR = DATA_DIR.parent / "output"
 
 
+class TestRenderUgrImage:
+    """render_ugr_image() returns valid PNG bytes."""
+
+    def test_returns_bytes(self, data_isym4):
+        from eulumdat_report import render_ugr_image
+        png = render_ugr_image(data_isym4)
+        assert isinstance(png, bytes)
+        assert len(png) > 1000
+
+    def test_png_signature(self, data_isym4):
+        from eulumdat_report import render_ugr_image
+        png = render_ugr_image(data_isym4)
+        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+
+    def test_from_ldt_path(self):
+        from eulumdat_report import render_ugr_image
+        png = render_ugr_image(SAMPLE_ISYM4)
+        assert isinstance(png, bytes) and len(png) > 1000
+
+    def test_saves_to_output(self, data_isym4):
+        from eulumdat_report import render_ugr_image
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        png = render_ugr_image(data_isym4)
+        out = OUTPUT_DIR / "sample_02_isym4_ugr.png"
+        out.write_bytes(png)
+        assert out.exists() and out.stat().st_size > 1000
+
+
+class TestRenderLuminanceImage:
+    """render_luminance_image() returns valid PNG bytes."""
+
+    def test_returns_bytes(self, data_isym4):
+        from eulumdat_report import render_luminance_image
+        png = render_luminance_image(data_isym4)
+        assert isinstance(png, bytes)
+        assert len(png) > 1000
+
+    def test_png_signature(self, data_isym4):
+        from eulumdat_report import render_luminance_image
+        png = render_luminance_image(data_isym4)
+        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+
+    def test_from_ldt_path(self):
+        from eulumdat_report import render_luminance_image
+        png = render_luminance_image(SAMPLE_ISYM4)
+        assert isinstance(png, bytes) and len(png) > 1000
+
+    def test_width_17cm_at_150dpi(self, data_isym4):
+        import struct
+        from eulumdat_report import render_luminance_image
+        png = render_luminance_image(data_isym4, width_cm=17.0, dpi=150)
+        w = struct.unpack(">I", png[16:20])[0]
+        # 17 cm @ 150 dpi = 1003 px (± 2 for rounding)
+        assert abs(w - 1003) <= 2
+
+    def test_saves_to_output(self, data_isym4):
+        from eulumdat_report import render_luminance_image
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        png = render_luminance_image(data_isym4)
+        out = OUTPUT_DIR / "sample_02_isym4_lum.png"
+        out.write_bytes(png)
+        assert out.exists() and out.stat().st_size > 1000
+
+
 class TestDataOutput:
     """Generate HTML + PDF reports for all samples into data/output/."""
 
@@ -396,6 +532,21 @@ class TestDataOutput:
         pdf_out = OUTPUT_DIR / ldt_path.with_suffix(".pdf").name
         assert html_out.exists() and html_out.stat().st_size > 1000
         assert pdf_out.exists() and pdf_out.stat().st_size > 1000
+
+    @pytest.mark.parametrize("ldt_path", ALL_SAMPLES)
+    def test_generate_with_lum_table(self, ldt_path):
+        lum_dir = OUTPUT_DIR / "lum_table"
+        lum_dir.mkdir(parents=True, exist_ok=True)
+        runner = CliRunner()
+        result = runner.invoke(main, [
+            str(ldt_path), "--output-dir", str(lum_dir), "--lum-table",
+        ])
+        assert result.exit_code == 0, result.output
+        html_out = lum_dir / ldt_path.with_suffix(".html").name
+        pdf_out  = lum_dir / ldt_path.with_suffix(".pdf").name
+        assert html_out.exists() and html_out.stat().st_size > 1000
+        assert pdf_out.exists() and pdf_out.stat().st_size > 1000
+        assert 'class="lum-table"' in html_out.read_text(encoding="utf-8")
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

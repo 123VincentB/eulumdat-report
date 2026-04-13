@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+{% include 'default.css' %}
+body { background: white !important; padding: 0 !important; margin: 0 !important; display: block !important; }
+/* Font overrides for image export (10pt main text) */
+table.ugr { font-size: 10pt; }
+table.ugr th, table.ugr td { font-size: 10pt; }
+table.ugr th.rho-val, table.ugr th.rho-label,
+table.ugr th.orient, table.ugr th.room-hdr { font-size: 9pt; }
+.section-label { font-size: 8.5pt; }
+.ugr-shr { font-size: 8.5pt; }
+</style>
+</head>
+<body>
+<div class="ugr-image-wrapper" style="padding: 10px; background: white; display: block; width: 100%; box-sizing: border-box;">
+
+  <div class="ugr-section">
+    <div class="section-label">Glare Evaluation &mdash; UGR &nbsp;(CIE&nbsp;117 / CIE&nbsp;190, SHR&nbsp;=&nbsp;0.25)</div>
+
+    {% if data.isym in (1, 4) and data.ugr %}
+
+    <div style="margin-top: 8px;">
+    <table class="ugr">
+      <colgroup>
+        <col style="width:6%"><col style="width:6%">
+        <col style="width:8.8%"><col style="width:8.8%"><col style="width:8.8%"><col style="width:8.8%"><col style="width:8.8%">
+        <col style="width:8.8%"><col style="width:8.8%"><col style="width:8.8%"><col style="width:8.8%"><col style="width:8.8%">
+      </colgroup>
+      <thead>
+        <tr>
+          <th class="rho-label" colspan="2">&#961; Ceiling</th>
+          {% for ref in data.ugr.reflectances %}<th class="rho-val">{{ ref[0] }}</th>{% endfor %}
+          {% for ref in data.ugr.reflectances %}<th class="rho-val{% if loop.first %} sep-left{% endif %}">{{ ref[0] }}</th>{% endfor %}
+        </tr>
+        <tr>
+          <th class="rho-label" colspan="2">&#961; Walls</th>
+          {% for ref in data.ugr.reflectances %}<th class="rho-val">{{ ref[1] }}</th>{% endfor %}
+          {% for ref in data.ugr.reflectances %}<th class="rho-val{% if loop.first %} sep-left{% endif %}">{{ ref[1] }}</th>{% endfor %}
+        </tr>
+        <tr>
+          <th class="rho-label" colspan="2">&#961; Floor</th>
+          {% for ref in data.ugr.reflectances %}<th class="rho-val">{{ ref[2] }}</th>{% endfor %}
+          {% for ref in data.ugr.reflectances %}<th class="rho-val{% if loop.first %} sep-left{% endif %}">{{ ref[2] }}</th>{% endfor %}
+        </tr>
+        <tr>
+          <th class="room-hdr" colspan="2">Room size<br><span style="display:inline-block;width:26px">X</span>Y</th>
+          <th class="orient" colspan="5">Viewing direction at right angles (crosswise)</th>
+          <th class="orient sep-left" colspan="5">Viewing direction parallel (endwise)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set sep_indices = [0, 6, 12, 16] %}
+        {% for i in range(19) %}
+        {% set room = data.ugr.room_sizes[i] %}
+        {% set x_h  = room[0] %}
+        {% set y_h  = room[1] %}
+        {% set row_cw = data.ugr.values["crosswise"][i] %}
+        {% set row_ew = data.ugr.values["endwise"][i] %}
+        {% set is_hl_room = (x_h == 4 and y_h == 8) or (x_h == 8 and y_h == 4) %}
+        <tr{% if i in sep_indices %} class="row-sep"{% endif %}>
+          <td class="label">{{ x_h }}H</td>
+          <td class="label">{{ y_h }}H</td>
+          {% for c in range(5) %}
+          <td class="value{% if is_hl_room and c == 0 %} ugr-highlight{% endif %}">{{ row_cw[c] | ugr_fmt }}</td>
+          {% endfor %}
+          {% for c in range(5) %}
+          <td class="value{% if is_hl_room and c == 0 %} ugr-highlight{% endif %}{% if c == 0 %} sep-left{% endif %}">{{ row_ew[c] | ugr_fmt }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div>
+    <div class="ugr-shr">
+      <span>Corrected UGR &mdash; luminous flux &Phi;&nbsp;=&nbsp;{{ (data.lamp_count * data.lamp_flux) | thousands }} lm &nbsp;(CIE&nbsp;190:2010&nbsp;&sect;4.1)</span>
+      <span>SHR&nbsp;=&nbsp;{{ data.ugr.shr }}</span>
+    </div>
+
+    {% else %}
+      <div class="ugr-warning">
+        &#9888;&nbsp; The UGR method is not applicable for this luminaire
+        (ISYM&nbsp;=&nbsp;{{ data.isym }} &mdash; asymmetric intensity distribution).
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+</body>
+</html>

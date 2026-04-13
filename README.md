@@ -12,9 +12,11 @@ Photometric datasheet generator (HTML + PDF) from EULUMDAT `.ldt` files — orch
 - Polar intensity diagram (cd/klm) — `eulumdat-plot`
 - Polar luminance diagram (cd/m²) + maximum luminance — `eulumdat-luminance`
 - UGR catalogue table (CIE 117 / CIE 190, 19 rooms × 5 reflectances × 2 directions) — `eulumdat-ugr`
+- Numerical luminance table (cd/m²) — optional section in full report (`--lum-table`)
 - Half-angles and FWHM per C-plane — `eulumdat-analysis`
 - HTML output (self-contained, browser-ready A4 preview)
 - PDF output via Playwright / Chromium (cross-platform — see installation notes)
+- PNG export of UGR and luminance tables for Word / docxtpl integration
 - Custom Jinja2 template support
 - CLI and Python API
 
@@ -51,6 +53,9 @@ eulumdat-report luminaire.ldt
 # HTML only, custom output directory
 eulumdat-report luminaire.ldt --no-pdf --output-dir reports/
 
+# Include numerical luminance table
+eulumdat-report luminaire.ldt --lum-table
+
 # All options
 eulumdat-report --help
 ```
@@ -70,6 +75,32 @@ Path("luminaire.html").write_text(html, encoding="utf-8")
 ReportRenderer.render_pdf(data, Path("luminaire.pdf"))
 ```
 
+## PNG export for Word / docxtpl
+
+The UGR table and luminance table can be exported as PNG images (17 cm wide, 150 dpi by default)
+for embedding in Word documents via [docxtpl](https://docxtpl.readthedocs.io/).
+
+```python
+import io
+from docxtpl import DocxTemplate, InlineImage
+from docx.shared import Mm
+from eulumdat_report import render_ugr_image, render_luminance_image
+
+# Render from .ldt path (or pass an already-collected ReportData)
+ugr_png = render_ugr_image("luminaire.ldt")
+lum_png = render_luminance_image("luminaire.ldt")
+
+doc = DocxTemplate("template.docx")
+context = {
+    "ugr_table": InlineImage(doc, io.BytesIO(ugr_png), width=Mm(170)),
+    "lum_table": InlineImage(doc, io.BytesIO(lum_png), width=Mm(170)),
+}
+doc.render(context)
+doc.save("rapport.docx")
+```
+
+Both functions accept `width_cm` (default `17.0`) and `dpi` (default `150`) parameters.
+
 ## CLI reference
 
 ```
@@ -78,12 +109,13 @@ Usage: eulumdat-report [OPTIONS] LDT_FILE
   Generate a photometric datasheet (HTML/PDF) from an EULUMDAT .ldt file.
 
 Options:
-  -o, --output-dir DIRECTORY  Output directory  [default: same as LDT_FILE]
-  --template FILE             Custom Jinja2 HTML template
-  --html / --no-html          Generate HTML output  [default: html]
-  --pdf  / --no-pdf           Generate PDF output   [default: pdf]
-  -v, --verbose               Enable debug logging
-  --help                      Show this message and exit
+  -o, --output-dir DIRECTORY      Output directory  [default: same as LDT_FILE]
+  --template FILE                 Custom Jinja2 HTML template
+  --html / --no-html              Generate HTML output  [default: html]
+  --pdf  / --no-pdf               Generate PDF output   [default: pdf]
+  --lum-table / --no-lum-table    Include numerical luminance table  [default: no-lum-table]
+  -v, --verbose                   Enable debug logging
+  --help                          Show this message and exit
 ```
 
 Output filenames are derived from the input basename: `luminaire.ldt` → `luminaire.html` / `luminaire.pdf`.
@@ -105,6 +137,7 @@ Jinja2 filters are available:
 | `thousands` | Space-separated thousands (int) | `12334` → `12 334` |
 | `fmt1` | 1 decimal place | `184.6` |
 | `ugr_fmt` | 1 decimal or `—` if None | `18.0` / `—` |
+| `lum_fmt` | Compact luminance: integer ≤ 99 999, scientific above | `123456` → `1.23e5` |
 | `svg_responsive` | Makes SVG responsive (adds `viewBox`, sets `width=100%`) | |
 
 SVG fields are embedded inline: `{{ data.svg_intensity \| svg_responsive \| safe }}`.
@@ -124,6 +157,7 @@ data.lum_max             # float | None (cd/m²)
 data.svg_intensity       # str | None
 data.svg_luminance       # str | None
 data.ugr                 # UgrTableData | None
+data.lum_table           # LuminanceTableData | None
 ```
 
 ## Dependencies

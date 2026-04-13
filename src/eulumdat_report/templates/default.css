@@ -181,7 +181,18 @@ table.ugr td.value    { color: var(--text); }
 table.ugr .sep-left   { border-left: 2px solid var(--sep) !important; }
 table.ugr tr.row-sep td, table.ugr tr.row-sep th { border-top: 2px solid var(--sep) !important; }
 table.ugr td.ugr-highlight { background: #fffbcc !important; font-weight: 700; color: #7a4800; }
-.ugr-shr { font-size: 6.8pt; color: var(--text-light); text-align: right; margin-top: 3px; font-style: italic; }
+.ugr-shr { font-size: 6.8pt; color: var(--text-light); display: flex; justify-content: space-between; margin-top: 3px; font-style: italic; }
+
+/* ── LUMINANCE TABLE ── */
+.lum-section { margin-bottom: 8px; }
+table.lum-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
+table.lum-table th, table.lum-table td { border: 1px solid var(--border); padding: 3px 5px; text-align: center; white-space: nowrap; overflow: hidden; }
+table.lum-table th.block-hdr { background: var(--blue-pale); font-style: italic; font-weight: 600; color: var(--blue-dark); font-size: 7pt; }
+table.lum-table th.c-hdr { background: #e5eaf0; font-weight: 700; color: var(--blue-dark); font-size: 7pt; }
+table.lum-table td.g-label { background: var(--blue-stripe); font-weight: 700; color: var(--text); font-size: 7pt; }
+table.lum-table td.value { color: var(--text); }
+table.lum-table td.lum-highlight { background: #fffbcc !important; font-weight: 700; color: #7a4800; }
+.lum-footer { font-size: 6.8pt; color: var(--text-light); display: flex; justify-content: space-between; margin-top: 3px; font-style: italic; }
 
 /* ── FOOTER ── */
 .report-footer { border-top: 1px solid var(--border); padding-top: 4px; display: flex; justify-content: space-between; color: var(--text-light); font-size: 6.5pt; }
