@@ -187,7 +187,18 @@ table.ugr td.value    { color: var(--text); }
 table.ugr .sep-left   { border-left: 2px solid var(--sep) !important; }
 table.ugr tr.row-sep td, table.ugr tr.row-sep th { border-top: 2px solid var(--sep) !important; }
 table.ugr td.ugr-highlight { background: #fffbcc !important; font-weight: 700; color: #7a4800; }
-.ugr-shr { font-size: 6.8pt; color: var(--text-light); text-align: right; margin-top: 3px; font-style: italic; }
+.ugr-shr { font-size: 6.8pt; color: var(--text-light); display: flex; justify-content: space-between; margin-top: 3px; font-style: italic; }
+
+/* ── LUMINANCE TABLE ── */
+.lum-section { margin-bottom: 8px; }
+table.lum-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
+table.lum-table th, table.lum-table td { border: 1px solid var(--border); padding: 3px 5px; text-align: center; white-space: nowrap; overflow: hidden; }
+table.lum-table th.block-hdr { background: var(--blue-pale); font-style: italic; font-weight: 600; color: var(--blue-dark); font-size: 7pt; }
+table.lum-table th.c-hdr { background: #e5eaf0; font-weight: 700; color: var(--blue-dark); font-size: 7pt; }
+table.lum-table td.g-label { background: var(--blue-stripe); font-weight: 700; color: var(--text); font-size: 7pt; }
+table.lum-table td.value { color: var(--text); }
+table.lum-table td.lum-highlight { background: #fffbcc !important; font-weight: 700; color: #7a4800; }
+.lum-footer { font-size: 6.8pt; color: var(--text-light); display: flex; justify-content: space-between; margin-top: 3px; font-style: italic; }
 
 /* ── FOOTER ── */
 .report-footer { border-top: 1px solid var(--border); padding-top: 4px; display: flex; justify-content: space-between; color: var(--text-light); font-size: 6.5pt; }
@@ -204,8 +215,8 @@ table.ugr td.ugr-highlight { background: #fffbcc !important; font-weight: 700; c
   </div>
   <div class="report-meta">
     <strong>Source file</strong>&nbsp; sample_02_isym4.ldt<br>
-    <strong>Generated</strong>&nbsp; 2026-04-13T09:51:48<br>
-    <strong>Tool</strong>&nbsp; eulumdat-report v1.0.0
+    <strong>Generated</strong>&nbsp; 2026-04-13T13:26:18<br>
+    <strong>Tool</strong>&nbsp; eulumdat-report v1.0.1.post1
   </div>
 </div>
 
@@ -485,6 +496,475 @@ table.ugr td.ugr-highlight { background: #fffbcc !important; font-weight: 700; c
   </div>
 
 </div>
+
+<!-- ═══ LUMINANCE TABLE ═══ -->
+
+
+
+
+
+
+<div class="lum-section">
+  <div class="section-label">Luminance Table &nbsp;[cd / m&sup2;]</div>
+  <div style="margin-top: 6px;">
+
+  <!-- Block 1 : C0–C165 -->
+  <table class="lum-table" style="margin-bottom: 4px;">
+    <colgroup>
+      <col style="width:5%">
+      <col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="block-hdr" colspan="13">C0&deg; &mdash; C165&deg;</th>
+      </tr>
+      <tr>
+        <th class="c-hdr">&gamma;</th>
+        <th class="c-hdr">C0&deg;</th><th class="c-hdr">C15&deg;</th><th class="c-hdr">C30&deg;</th><th class="c-hdr">C45&deg;</th><th class="c-hdr">C60&deg;</th><th class="c-hdr">C75&deg;</th><th class="c-hdr">C90&deg;</th><th class="c-hdr">C105&deg;</th><th class="c-hdr">C120&deg;</th><th class="c-hdr">C135&deg;</th><th class="c-hdr">C150&deg;</th><th class="c-hdr">C165&deg;</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td class="g-label">65&deg;</td>
+        
+        
+        <td class="value lum-highlight">5603</td>
+        
+        
+        <td class="value">5037</td>
+        
+        
+        <td class="value">4577</td>
+        
+        
+        <td class="value">4396</td>
+        
+        
+        <td class="value">4192</td>
+        
+        
+        <td class="value">4149</td>
+        
+        
+        <td class="value">4385</td>
+        
+        
+        <td class="value">4149</td>
+        
+        
+        <td class="value">4192</td>
+        
+        
+        <td class="value">4396</td>
+        
+        
+        <td class="value">4577</td>
+        
+        
+        <td class="value">5037</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">70&deg;</td>
+        
+        
+        <td class="value">5544</td>
+        
+        
+        <td class="value">4881</td>
+        
+        
+        <td class="value">4677</td>
+        
+        
+        <td class="value">4447</td>
+        
+        
+        <td class="value">4304</td>
+        
+        
+        <td class="value">4331</td>
+        
+        
+        <td class="value">4581</td>
+        
+        
+        <td class="value">4331</td>
+        
+        
+        <td class="value">4304</td>
+        
+        
+        <td class="value">4447</td>
+        
+        
+        <td class="value">4677</td>
+        
+        
+        <td class="value">4881</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">75&deg;</td>
+        
+        
+        <td class="value">4659</td>
+        
+        
+        <td class="value">4215</td>
+        
+        
+        <td class="value">3875</td>
+        
+        
+        <td class="value">4402</td>
+        
+        
+        <td class="value">4371</td>
+        
+        
+        <td class="value">4366</td>
+        
+        
+        <td class="value">4372</td>
+        
+        
+        <td class="value">4366</td>
+        
+        
+        <td class="value">4371</td>
+        
+        
+        <td class="value">4402</td>
+        
+        
+        <td class="value">3875</td>
+        
+        
+        <td class="value">4215</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">80&deg;</td>
+        
+        
+        <td class="value">4559</td>
+        
+        
+        <td class="value">3329</td>
+        
+        
+        <td class="value">2988</td>
+        
+        
+        <td class="value">2594</td>
+        
+        
+        <td class="value">4298</td>
+        
+        
+        <td class="value">4228</td>
+        
+        
+        <td class="value">4243</td>
+        
+        
+        <td class="value">4228</td>
+        
+        
+        <td class="value">4298</td>
+        
+        
+        <td class="value">2594</td>
+        
+        
+        <td class="value">2988</td>
+        
+        
+        <td class="value">3329</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">85&deg;</td>
+        
+        
+        <td class="value">463</td>
+        
+        
+        <td class="value">266</td>
+        
+        
+        <td class="value">209</td>
+        
+        
+        <td class="value">376</td>
+        
+        
+        <td class="value">1336</td>
+        
+        
+        <td class="value">3692</td>
+        
+        
+        <td class="value">3848</td>
+        
+        
+        <td class="value">3692</td>
+        
+        
+        <td class="value">1336</td>
+        
+        
+        <td class="value">376</td>
+        
+        
+        <td class="value">209</td>
+        
+        
+        <td class="value">266</td>
+        
+      </tr>
+      
+    </tbody>
+  </table>
+
+  <!-- Block 2 : C180–C345 -->
+  <table class="lum-table">
+    <colgroup>
+      <col style="width:5%">
+      <col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%"><col style="width:7.92%">
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="block-hdr" colspan="13">C180&deg; &mdash; C345&deg;</th>
+      </tr>
+      <tr>
+        <th class="c-hdr">&gamma;</th>
+        <th class="c-hdr">C180&deg;</th><th class="c-hdr">C195&deg;</th><th class="c-hdr">C210&deg;</th><th class="c-hdr">C225&deg;</th><th class="c-hdr">C240&deg;</th><th class="c-hdr">C255&deg;</th><th class="c-hdr">C270&deg;</th><th class="c-hdr">C285&deg;</th><th class="c-hdr">C300&deg;</th><th class="c-hdr">C315&deg;</th><th class="c-hdr">C330&deg;</th><th class="c-hdr">C345&deg;</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td class="g-label">65&deg;</td>
+        
+        
+        <td class="value lum-highlight">5603</td>
+        
+        
+        <td class="value">5037</td>
+        
+        
+        <td class="value">4577</td>
+        
+        
+        <td class="value">4396</td>
+        
+        
+        <td class="value">4192</td>
+        
+        
+        <td class="value">4149</td>
+        
+        
+        <td class="value">4385</td>
+        
+        
+        <td class="value">4149</td>
+        
+        
+        <td class="value">4192</td>
+        
+        
+        <td class="value">4396</td>
+        
+        
+        <td class="value">4577</td>
+        
+        
+        <td class="value">5037</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">70&deg;</td>
+        
+        
+        <td class="value">5544</td>
+        
+        
+        <td class="value">4881</td>
+        
+        
+        <td class="value">4677</td>
+        
+        
+        <td class="value">4447</td>
+        
+        
+        <td class="value">4304</td>
+        
+        
+        <td class="value">4331</td>
+        
+        
+        <td class="value">4581</td>
+        
+        
+        <td class="value">4331</td>
+        
+        
+        <td class="value">4304</td>
+        
+        
+        <td class="value">4447</td>
+        
+        
+        <td class="value">4677</td>
+        
+        
+        <td class="value">4881</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">75&deg;</td>
+        
+        
+        <td class="value">4659</td>
+        
+        
+        <td class="value">4215</td>
+        
+        
+        <td class="value">3875</td>
+        
+        
+        <td class="value">4402</td>
+        
+        
+        <td class="value">4371</td>
+        
+        
+        <td class="value">4366</td>
+        
+        
+        <td class="value">4372</td>
+        
+        
+        <td class="value">4366</td>
+        
+        
+        <td class="value">4371</td>
+        
+        
+        <td class="value">4402</td>
+        
+        
+        <td class="value">3875</td>
+        
+        
+        <td class="value">4215</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">80&deg;</td>
+        
+        
+        <td class="value">4559</td>
+        
+        
+        <td class="value">3329</td>
+        
+        
+        <td class="value">2988</td>
+        
+        
+        <td class="value">2594</td>
+        
+        
+        <td class="value">4298</td>
+        
+        
+        <td class="value">4228</td>
+        
+        
+        <td class="value">4243</td>
+        
+        
+        <td class="value">4228</td>
+        
+        
+        <td class="value">4298</td>
+        
+        
+        <td class="value">2594</td>
+        
+        
+        <td class="value">2988</td>
+        
+        
+        <td class="value">3329</td>
+        
+      </tr>
+      
+      <tr>
+        <td class="g-label">85&deg;</td>
+        
+        
+        <td class="value">463</td>
+        
+        
+        <td class="value">266</td>
+        
+        
+        <td class="value">209</td>
+        
+        
+        <td class="value">376</td>
+        
+        
+        <td class="value">1336</td>
+        
+        
+        <td class="value">3692</td>
+        
+        
+        <td class="value">3848</td>
+        
+        
+        <td class="value">3692</td>
+        
+        
+        <td class="value">1336</td>
+        
+        
+        <td class="value">376</td>
+        
+        
+        <td class="value">209</td>
+        
+        
+        <td class="value">266</td>
+        
+      </tr>
+      
+    </tbody>
+  </table>
+
+  </div>
+  <div class="lum-footer">
+    <span>Luminous flux: 12 334 lm</span>
+    <span>Luminance [cd/m&sup2;]</span>
+  </div>
+</div>
+
 
 <!-- ═══ UGR ═══ -->
 <div class="ugr-section">
@@ -1154,15 +1634,18 @@ table.ugr td.ugr-highlight { background: #fffbcc !important; font-weight: 700; c
     </tbody>
   </table>
   </div>
-  <div class="ugr-shr">SHR = 0.25</div>
+  <div class="ugr-shr">
+    <span>Corrected UGR &mdash; luminous flux &Phi;&nbsp;=&nbsp;12 334 lm &nbsp;(CIE&nbsp;190:2010&nbsp;&sect;4.1)</span>
+    <span>SHR&nbsp;=&nbsp;0.25</span>
+  </div>
 
   
 </div>
 
 <!-- ═══ FOOTER ═══ -->
 <div class="report-footer">
-  <span>Generated by <strong>eulumdat-report v1.0.0</strong></span>
-  <span>sample_02_isym4.ldt &nbsp;&middot;&nbsp; 2026-04-13T09:51:48</span>
+  <span>Generated by <strong>eulumdat-report v1.0.1.post1</strong></span>
+  <span>sample_02_isym4.ldt &nbsp;&middot;&nbsp; 2026-04-13T13:26:18</span>
 </div>
 
 </div><!-- /.a4-page -->
