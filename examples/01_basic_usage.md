@@ -1,5 +1,8 @@
 # Basic usage — eulumdat-report
 
+[![Photometric Datasheet — sample preview](https://raw.githubusercontent.com/123VincentB/eulumdat-report/main/examples/sample_02_isym4_thumbnail.png)](https://htmlpreview.github.io/?https://github.com/123VincentB/eulumdat-report/blob/main/examples/sample_02_isym4.html)
+
+
 ## CLI
 
 ```bash

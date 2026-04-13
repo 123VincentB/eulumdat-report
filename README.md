@@ -18,6 +18,10 @@ Photometric datasheet generator (HTML + PDF) from EULUMDAT `.ldt` files — orch
 - Custom Jinja2 template support
 - CLI and Python API
 
+## Sample output
+
+[![Photometric Datasheet — sample preview](https://raw.githubusercontent.com/123VincentB/eulumdat-report/main/examples/sample_02_isym4_thumbnail.png)](https://htmlpreview.github.io/?https://github.com/123VincentB/eulumdat-report/blob/main/examples/sample_02_isym4.html)
+
 ## Installation
 
 ```bash
