@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "eulumdat-report"
-version = "1.0.0"
+version = "1.0.1"
 description = "Photometric datasheet generator (HTML + PDF) from EULUMDAT .ldt files"
 readme = "README.md"
 license = "MIT"
@@ -30,7 +30,7 @@ dependencies = [
     "eulumdat-luminance",
     "eulumdat-ugr",
     "jinja2",
-    "weasyprint",
+    "playwright",
     "click",
 ]
 

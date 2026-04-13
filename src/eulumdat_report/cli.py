@@ -79,16 +79,18 @@ def main(
         try:
             ReportRenderer.render_pdf(data, pdf_path, template_path=template)
             click.echo(f"PDF : {pdf_path}")
-        except (ImportError, OSError) as exc:
-            if "libgobject" in str(exc) or "GTK" in str(exc) or isinstance(exc, ImportError):
+        except ImportError:
+            click.echo(
+                "Playwright is not installed. Run: pip install playwright && playwright install chromium",
+                err=True,
+            )
+            sys.exit(1)
+        except Exception as exc:
+            if "Executable doesn't exist" in str(exc) or "chromium" in str(exc).lower():
                 click.echo(
-                    "WeasyPrint requires GTK libraries which are not installed on this system. "
-                    "PDF output skipped. See https://doc.courtbouillon.org/weasyprint/stable/first_steps.html",
+                    "Chromium browser not found. Run: playwright install chromium",
                     err=True,
                 )
             else:
                 click.echo(f"Error generating PDF: {exc}", err=True)
-                sys.exit(1)
-        except Exception as exc:
-            click.echo(f"Error generating PDF: {exc}", err=True)
             sys.exit(1)

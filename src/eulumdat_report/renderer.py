@@ -117,12 +117,26 @@ class ReportRenderer:
         output_path: Path,
         template_path: Path | None = None,
     ) -> None:
-        """Write a PDF to *output_path* via WeasyPrint."""
-        from weasyprint import HTML  # lazy import — WeasyPrint requires GTK on Windows
+        """Write a PDF to *output_path* via Playwright (Chromium headless)."""
+        from playwright.sync_api import sync_playwright  # lazy import
 
         html_str = cls.render_html(data, template_path)
-        tmpl_dir = template_path.parent if template_path else _TEMPLATES_DIR
-        HTML(string=html_str, base_url=str(tmpl_dir)).write_pdf(str(output_path))
+        with sync_playwright() as p:
+            browser = p.chromium.launch()
+            page = browser.new_page()
+            page.set_content(html_str, wait_until="networkidle")
+            page.add_style_tag(content=(
+                "@page { margin: 12mm 14mm !important; }"
+                " body { background: white !important; padding: 0 !important; display: block !important; }"
+                " .a4-page { box-shadow: none !important; padding: 0 !important; }"
+            ))
+            page.pdf(
+                path=str(output_path),
+                format="A4",
+                print_background=True,
+                margin={"top": "0", "right": "0", "bottom": "0", "left": "0"},
+            )
+            browser.close()
 
     @classmethod
     def _make_env(cls, template_path: Path | None) -> Environment:

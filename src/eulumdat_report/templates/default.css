@@ -170,7 +170,7 @@ body {
 /* ── UGR ── */
 .ugr-section { margin-bottom: 8px; }
 .ugr-warning { border: 1.5px solid var(--accent); background: #fffbee; color: #7a4800; padding: 6px 10px; font-size: 7.5pt; font-style: italic; margin-top: 4px; }
-table.ugr { width: 100%; border-collapse: collapse; font-size: 7.5pt; }
+table.ugr { width: 100%; border-collapse: collapse; font-size: 7.5pt; table-layout: fixed; }
 table.ugr th, table.ugr td { border: 1px solid var(--border); padding: 3px 5px; text-align: center; white-space: nowrap; }
 table.ugr th.rho-label { background: #e5eaf0; font-weight: 600; color: var(--text); text-align: left; padding-left: 7px; font-size: 7pt; }
 table.ugr th.rho-val  { background: #e5eaf0; font-weight: 600; color: var(--text); font-size: 7pt; }

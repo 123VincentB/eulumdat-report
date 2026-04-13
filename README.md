@@ -14,7 +14,7 @@ Photometric datasheet generator (HTML + PDF) from EULUMDAT `.ldt` files — orch
 - UGR catalogue table (CIE 117 / CIE 190, 19 rooms × 5 reflectances × 2 directions) — `eulumdat-ugr`
 - Half-angles and FWHM per C-plane — `eulumdat-analysis`
 - HTML output (self-contained, browser-ready A4 preview)
-- PDF output via WeasyPrint (requires GTK — see installation notes)
+- PDF output via Playwright / Chromium (cross-platform — see installation notes)
 - Custom Jinja2 template support
 - CLI and Python API
 
@@ -24,18 +24,24 @@ Photometric datasheet generator (HTML + PDF) from EULUMDAT `.ldt` files — orch
 pip install eulumdat-report
 ```
 
-### PDF output (optional)
+### PDF output
 
-PDF rendering requires WeasyPrint with GTK libraries. On Windows, follow the
-[WeasyPrint installation guide](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html#windows).
-HTML output works on all platforms without GTK.
+PDF rendering uses [Playwright](https://playwright.dev/python/) (Chromium headless).
+After installing the package, download the Chromium browser once:
+
+```bash
+playwright install chromium
+```
+
+This step is required on all platforms (Windows, Linux, macOS). HTML output works
+without it.
 
 ## Quick start
 
 ### CLI
 
 ```bash
-# HTML + PDF (PDF skipped gracefully if GTK not installed)
+# HTML + PDF
 eulumdat-report luminaire.ldt
 
 # HTML only, custom output directory
@@ -56,7 +62,7 @@ data = ReportCollector.collect("luminaire.ldt")
 html = ReportRenderer.render_html(data)
 Path("luminaire.html").write_text(html, encoding="utf-8")
 
-# PDF (requires GTK)
+# PDF (requires: playwright install chromium)
 ReportRenderer.render_pdf(data, Path("luminaire.pdf"))
 ```
 
@@ -126,7 +132,7 @@ data.ugr                 # UgrTableData | None
 | `eulumdat-ugr` | UGR catalogue table |
 | `eulumdat-analysis` | Half-angles, FWHM |
 | `jinja2` | HTML templating |
-| `weasyprint` | PDF rendering |
+| `playwright` | PDF rendering (Chromium headless) |
 | `click` | CLI |
 
 ## Running the tests

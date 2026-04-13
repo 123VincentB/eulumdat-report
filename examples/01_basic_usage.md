@@ -9,7 +9,7 @@ eulumdat-report luminaire.ldt
 # Specify output directory
 eulumdat-report luminaire.ldt --output-dir reports/
 
-# HTML only (no GTK/WeasyPrint required)
+# HTML only (no Chromium required)
 eulumdat-report luminaire.ldt --no-pdf --output-dir reports/
 
 # PDF only
@@ -38,7 +38,7 @@ print(f"{data.lum_max:.0f} cd/m²") # peak luminance
 html = ReportRenderer.render_html(data)
 Path("luminaire.html").write_text(html, encoding="utf-8")
 
-# Render to PDF (requires GTK / WeasyPrint)
+# Render to PDF (requires: playwright install chromium)
 ReportRenderer.render_pdf(data, Path("luminaire.pdf"))
 
 # Custom template

@@ -378,6 +378,26 @@ class TestCli:
         assert out.exists() and out.stat().st_size > 1000
 
 
+# ── Step 9 — Data output (HTML + PDF to data/output/) ────────────────────────
+
+OUTPUT_DIR = DATA_DIR.parent / "output"
+
+
+class TestDataOutput:
+    """Generate HTML + PDF reports for all samples into data/output/."""
+
+    @pytest.mark.parametrize("ldt_path", ALL_SAMPLES)
+    def test_generate_html_and_pdf(self, ldt_path):
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        runner = CliRunner()
+        result = runner.invoke(main, [str(ldt_path), "--output-dir", str(OUTPUT_DIR)])
+        assert result.exit_code == 0, result.output
+        html_out = OUTPUT_DIR / ldt_path.with_suffix(".html").name
+        pdf_out = OUTPUT_DIR / ldt_path.with_suffix(".pdf").name
+        assert html_out.exists() and html_out.stat().st_size > 1000
+        assert pdf_out.exists() and pdf_out.stat().st_size > 1000
+
+
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
 def _body(html: str) -> str:
